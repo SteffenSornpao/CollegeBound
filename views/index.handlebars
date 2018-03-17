@@ -1,0 +1,42 @@
+<h1>College Bound</h1>
+<h2 id = "title">Your first correct step of your future</h2>
+<div class = "container">
+<div id = "one">
+    <h2>Your College choices</h2>
+
+  <div id = "collegeChoices">
+  {{#each <api name>}}
+    {{#unless ordered}}
+      {{> <api name>/burger-block ordered=true}}
+    {{/unless}}
+  {{/each}}
+  </div>
+</div>
+
+
+<br>
+<h2>Tell us about yourself</h2>
+<form class="create-form">
+
+  <div class="form-group">
+    <label for="testScore">Test Score:</label>
+    <input type="text" id="testScore" name="<varchar>" placeholder = "ACT or SAT score">
+ </div> <br>
+ <div class="form-group">
+    <label for="cost">Cost:</label>
+    <input type="text" id="cost" name="<integer>" placeholder = "Cost">
+ </div><br>
+ <div class="form-group">
+    <label for="size">Size of School:</label>
+    <input type="text" id="size" name="<integer>" placeholder = "School Size">
+ </div><br>
+ 
+ <div class="form-group">
+    <label for="major">Majors:</label>
+    <input type="text" id="major" name="<varchar>" placeholder = "What do you want study?">
+ </div><br>
+ 
+
+  <button type="submit" >Add my preferences</button>
+</form>
+</div>
