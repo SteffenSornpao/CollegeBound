@@ -1,7 +1,8 @@
 module.exports = function(sequelize, DataTypes) {
-    var CollegeBound = sequelize.define("collegebound", {
+    var College = sequelize.define("college", {
       schoolid: DataTypes.INTEGER,
-      searched: DataTypes.INTEGER
+      schoolname: DataTypes.STRING,
+      searchCount: DataTypes.INTEGER
     });
-    return CollegeBound;
+    return college;
   };
