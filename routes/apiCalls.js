@@ -6,24 +6,35 @@ query = 'I got a 30 on the ACT'
 
 
 function callDialogApi (query, req, res) {
-    axios.get('https://api.dialogflow.com/v1/query?v=20150910&lang=en&query='+query+'&sessionId=12345&timezone=America/New_York', {
-    headers: {
-        Authorization: 'Bearer ' + token 
-    }
+    //TODO - change this to req.body.prevParams when the front end is incorporated 
+    var prevParams = ["Just", "seeing"]
+
+    axios.post('https://api.dialogflow.com/v1/query?v=20150910', 
+    {
+        "lang": "en",
+        "query": query,
+        "sessionId": "12345",
+        "timezone": "America/New_York",
+        "prevParams": prevParams
+    },
+    {
+        headers: {
+            Authorization: 'Bearer ' + token 
+        }
     }).then(result => {
         var data = result.data
         console.log(data)
         return data.result.parameters
     }).then( params => {
         console.log(params)
-        callCollegeAPI(params)
+        callCollegeAPI(params, prevParams, req, res)
 
     })
 }
 
 
-function callCollegeAPI (params, req, res) {
-    var urlParams = packageParams(params)
+function callCollegeAPI (params, prevParams, req, res) {
+    var urlParams = packageParams(params, prevParams)
     
     var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size'
 
@@ -38,11 +49,13 @@ function callCollegeAPI (params, req, res) {
 }
 
 //alter this as more parameters, turns parameters into url strings for use in college scorecard API call
-function packageParams (params) {
+function packageParams (params, prevParams) {
+    console.log('Previous parameters: ' + prevParams)
     //might need to change the refernces on params later...
     var SATscores = ''
     
-    var ACTscores = params.number ? `2015.admissions.act_scores.midpoint.cumulative__range=${params.number}..&` : ''
+    //search for range of ACT scores (+3, -5)
+    var ACTscores = params.number ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(params.number) - 5}..${Number(params.number) + 3}&` : ''
     
     var location = ''
     
