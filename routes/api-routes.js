@@ -65,6 +65,5 @@ module.exports = function(app) {
       }).then(function(dbCollege) {
         res.json(dbCollege);
       });
-    });
   });
-};
+}
