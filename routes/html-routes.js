@@ -1,9 +1,11 @@
 var https = require('https')
+var path = require('path')
+var getInfo = require('./apiCalls')
 
 module.exports = function (app){
     //homepage
     app.get('/', function(req, res){
-
+        res.sendFile(path.join(__dirname, 'index.html'))
     })
 
     //form
@@ -13,8 +15,8 @@ module.exports = function (app){
 
     //results
     app.post('/results', function(req, res){
-        // req.body.query
-        
+        var query = req.body.query
+        getInfo(query, req, res)
     })
 
     //most viewed

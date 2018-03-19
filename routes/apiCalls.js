@@ -2,8 +2,6 @@ var axios = require('axios')
 var token = 'dd0abd72024442a793eb1b21c2ec2f27'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
-query = 'I got a 30 on the ACT'
-
 
 function callDialogApi (query, req, res) {
     //TODO - change this to req.body.prevParams when the front end is incorporated 
@@ -29,6 +27,9 @@ function callDialogApi (query, req, res) {
         console.log(params)
         callCollegeAPI(params, prevParams, req, res)
 
+    }).catch(err => {
+        console.log('------ERROR---------')
+        console.log(err)
     })
 }
 
@@ -43,8 +44,10 @@ function callCollegeAPI (params, prevParams, req, res) {
 
     axios.get(pathES6).then(result => {
         console.log(result.data.results)
+        res.end(JSON.stringify(result.data.results))
     }).catch(err => {
-        console.log('Something went wrong!')
+        console.log('---SOMETHING WENT WRONG------')
+        console.log(err)
     })
 }
 
@@ -66,7 +69,9 @@ function packageParams (params, prevParams) {
     return ACTscores + SATscores + location + schoolCost + schoolSize
 }
 
-callDialogApi('I got a 26 on the ACT and want a school with less than 2000 people')
+module.exports = callDialogApi
+
+// callDialogApi('I got a 26 on the ACT and want a school with less than 2000 people')
 
 
 
