@@ -72,7 +72,7 @@ function packageParams (params, prevParams) {
     //search for range of ACT scores (+3, -5)
     var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
     
-    var school_location = ''
+    var school_location = determineLocation(finalParams.school_location)
     
     var school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : ''
     
@@ -95,7 +95,7 @@ function reconcileParams (params, prevParams) {
     //keys in params and prevParams MUST have same names
     var finalParams = {}
 
-    //if there's a new input use that, if not use sessionStorage item, if not use null
+    //if there's a new input use that, if not use sessionStorage item, if not use an empty string
     for (key in params){
         finalParams[key] = params[key] ? params[key].trim() : prevParams[key] ? prevParams[key].trim() : ''
         console.log('-----'+key+'------')
@@ -112,6 +112,226 @@ function determineLocation (location) {
     if(!location){
         return ''
     }
+
+    console.log(location.toLowerCase())
+    location = location.toLowerCase().trim()
+    //determined by state/region
+    var url = ''
+    
+    switch (location){
+        case 'alabama':
+            url = 'school.state_fips=1&'
+            break;
+        case 'alaska':
+            url = 'school.state_fips=2&'
+            break;
+        case 'arizona':
+            url = 'school.state_fips=4&'
+            break;
+        case 'arkansas':
+            url = 'school.state_fips=5&'
+            break;
+        case 'california':
+            url = 'school.state_fips=6&'
+            break;
+        case 'colorado':
+            url = 'school.state_fips=8&'
+            break;
+        case 'connecticut':
+            url = 'school.state_fips=9&'
+            break;
+        case 'delaware':
+            url = 'school.state_fips=10&'
+            break;
+        case 'washington d.c.':
+            url = 'school.state_fips=11&'
+            break;
+        case 'florida':
+            url = 'school.state_fips=12&'
+            break;
+        case 'georgia':
+            url = 'school.state_fips=13&'
+            break;
+        case 'hawaii':
+            url = 'school.state_fips=15&'
+            break;
+        case 'idaho':
+            url = 'school.state_fips=16&'
+            break;
+        case 'illinois':
+            url = 'school.state_fips=17&'
+            break;
+        case 'indiana':
+            url = 'school.state_fips=18&'
+            break;
+        case 'iowa':
+            url = 'school.state_fips=19&'
+            break;
+        case 'kansas':
+            url = 'school.state_fips=20&'
+            break;
+        case 'kentucky':
+            url = 'school.state_fips=21&'
+            break;
+        case 'louisiana':
+            url = 'school.state_fips=22&'
+            break;
+        case 'maine':
+            url = 'school.state_fips=23&'
+            break;
+        case 'maryland':
+            url = 'school.state_fips=24&'
+            break;
+        case 'massachusetts':
+            url = 'school.state_fips=25&'
+            break;
+        case 'michigan':
+            url = 'school.state_fips=26&'
+            break;
+        case 'minnesota':
+            url = 'school.state_fips=27&'
+            break;
+        case 'mississippi':
+            url = 'school.state_fips=28&'
+            break;
+        case 'missouri':
+            url = 'school.state_fips=29&'
+            break;
+        case 'montana':
+            url = 'school.state_fips=30&'
+            break;
+        case 'nebraska':
+            url = 'school.state_fips=31&'
+            break;
+        case 'nevada':
+            url = 'school.state_fips=32&'
+            break;
+        case 'new hampshire':
+            url = 'school.state_fips=33&'
+            break;
+        case 'new jersey':
+            url = 'school.state_fips=34&'
+            break;
+        case 'new mexico':
+            url = 'school.state_fips=35&'
+            break;
+        case 'new york':
+            url = 'school.state_fips=36&'
+            break;
+        case 'north carolina':
+            url = 'school.state_fips=37&'
+            break;
+        case 'north dakota':
+            url = 'school.state_fips=38&'
+            break;
+        case 'ohio':
+            url = 'school.state_fips=39&'
+            break;
+        case 'oklahoma':
+            url = 'school.state_fips=40&'
+            break;
+        case 'oregon':
+            url = 'school.state_fips=41&'
+            break;
+        case 'pennsylvania':
+            url = 'school.state_fips=42&'
+            break;
+        case 'rhode island':
+            url = 'school.state_fips=44&'
+            break;
+        case 'south carolina':
+            url = 'school.state_fips=45&'
+            break;
+        case 'south dakota':
+            url = 'school.state_fips=46&'
+            break;
+        case 'tennessee':
+            url = 'school.state_fips=47&'
+            break;
+        case 'texas':
+            url = 'school.state_fips=48&'
+            break;
+        case 'utah':
+            url = 'school.state_fips=49&'
+            break;
+        case 'vermont':
+            url = 'school.state_fips=50&'
+            break;
+        case 'virginia':
+            url = 'school.state_fips=51&'
+            break;
+        case 'washington':
+            url = 'school.state_fips=53&'
+            break;
+        case 'west virgina':
+            url = 'school.state_fips=54&'
+            break;
+        case 'wisconsin':
+            url = 'school.state_fips=55&'
+            break;
+        case 'wyoming':
+            url = 'school.state_fips=56&'
+            break;
+        case 'american samoa':
+            url = 'school.state_fips=60&'
+            break;
+        case 'micronesia':
+            url = 'school.state_fips=64&'
+            break;
+        case 'guam':
+            url = 'school.state_fips=66&'
+            break;
+        case 'mariana':
+            url = 'school.state_fips=69&'
+            break;
+        case 'palau':
+            url = 'school.state_fips=70&'
+            break;
+        case 'puerto rico':
+            url = 'school.state_fips=72&'
+            break;
+        case 'virgin islands':
+            url = 'school.state_fips=78&'
+            break;
+        //regions
+        case 'north east':
+            url = 'region_id=1&'
+            break;
+        case 'mid east':
+            url = 'region_id=2&'
+            break;
+        case 'north':
+            url = 'region_id=3&'
+            break;
+        case 'midwest':
+            url = 'region_id=4&'
+            break;
+        case 'southeast':
+            url = 'region_id=5&'
+            break;
+        case 'southwest':
+            url = 'region_id=6&'
+            break;
+        case 'rocky mountains':
+            url = 'region_id=7&'
+            break;
+        case 'west coast':
+            url = 'region_id=8&'
+            break;
+        case 'territories':
+            url = 'region_id=9&'
+            break;
+        case 'northwest':
+            url = 'school.state_fips=53,41,16&'
+            break;
+        
+        default:
+            //just want to get error message
+            url='askjdnasndasd'
+            break;
+    }
+
+    return url
 
 
 }
