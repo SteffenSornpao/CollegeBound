@@ -84,3 +84,5 @@ try {
 }
 
 $('#submit-query').on('click', submitQuery)
+
+//new file

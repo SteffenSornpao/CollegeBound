@@ -341,7 +341,7 @@ function determineMajor (major){
 }
 
 module.exports = {
-    determineLocation: determineLocation,
-    determineSchoolSize: determineSchoolSize,
-    determineMajor: determineMajor,
+    determineLocation,
+    determineSchoolSize,
+    determineMajor,
 }
