@@ -23,11 +23,17 @@ function callDialogApi (query, prevParams, res) {
     }).then(result => {
         var data = result.data
         console.log(data)
-        return data.result.parameters
-    }).then( params => {
-        console.log(params)
-        callCollegeAPI(params, prevParams, res)
-
+        return data.result
+    }).then( result => {
+        console.log(result.parameters)
+        //if the AI couldn't detect what the user was saying...
+        var fallbackMsg = result.fulfillment.speech
+        if(result.metadata.intentName === "Default Fallback Intent"){
+            res.send(JSON.stringify(fallbackMsg))
+            return
+        }
+        
+        callCollegeAPI(result.parameters, prevParams, res, fallbackMsg)
     }).catch(err => {
         console.log('------ERROR---------')
         console.log(err)
@@ -35,7 +41,7 @@ function callDialogApi (query, prevParams, res) {
 }
 
 
-function callCollegeAPI (params, prevParams, res) {
+function callCollegeAPI (params, prevParams, res, fallbackMsg) {
     var paramsObj = packageParams(params, prevParams)
 
     var urlParams = paramsObj.urlParams
@@ -51,7 +57,7 @@ function callCollegeAPI (params, prevParams, res) {
         res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
-        // console.log(err)
+        res.end(fallbackMsg)
     })
 }
 
@@ -68,11 +74,13 @@ function packageParams (params, prevParams) {
     
     var school_location = ''
     
-    var school_size = params.school_size ? `2015.student.size__range=..${params.school_size}&` : ''
+    var school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : ''
     
     var school_cost = ''
 
     var urlParams =  ACT_score + SAT_score + school_location + school_cost + school_size
+
+    console.log('Url: ' + urlParams)
 
     return {
         urlParams: urlParams,
@@ -89,13 +97,14 @@ function reconcileParams (params, prevParams) {
 
     //if there's a new input use that, if not use sessionStorage item, if not use null
     for (key in params){
-        finalParams[key] = params[key] ? params[key] : prevParams[key] ? prevParams[key] : null
+        finalParams[key] = params[key] ? params[key].trim() : prevParams[key] ? prevParams[key].trim() : ''
         console.log('-----'+key+'------')
         console.log("Old: " + prevParams[key])
         console.log('New: ' + params[key])
         console.log('Final: ' + finalParams[key])
     }
 
+    console.log('Final params: ' + JSON.stringify(finalParams))
     return(finalParams)
 }
 

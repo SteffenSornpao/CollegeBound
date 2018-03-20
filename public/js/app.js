@@ -38,9 +38,14 @@ try {
 
             //store all params in session storage
             for (key in finalParams){
+                //don't log school_size1
+                if(key === "school_size1"){
+                    continue
+                }
                 console.log(key)
                 sessionStorage.setItem(key, finalParams[key])
             }
+
 
             console.log('It all worked!')
         })
