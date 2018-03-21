@@ -70,9 +70,9 @@ function submitQuery(){
           }
           sessionStorage.setItem(key, finalParams[key])
       }
-      $("#info").html(" ")
+      $("#results").html(" ")
       for (i=0;i<school.length;i++){
-        $("#info").append(
+        $("#results").append(
           "<div class='result'>"+school[i]['school.name']+"</div>"
         )
       }
@@ -97,9 +97,9 @@ $("#reset").on("click", function(){
   sessionStorage.clear();
 })
 
-$("#start-record-btn").on("mouseenter", function(){
-  $("#start-record-btn").animate({backgroundColor: "#ff0"}, 500)
+$("#speak").on("mouseenter", function(){
+  $("#speak").animate({backgroundColor: "#ff0"}, 500)
 })
-$("#start-record-btn").on("mouseleave", function(){
-  $("#start-record-btn").animate({backgroundColor: "#fff"}, 500)
+$("#speak").on("mouseleave", function(){
+  $("#speak").animate({backgroundColor: "#fff"}, 500)
 })

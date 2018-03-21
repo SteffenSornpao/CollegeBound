@@ -3,7 +3,7 @@ var token = 'dd0abd72024442a793eb1b21c2ec2f27'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //Helper functions
-var stateFips      = require('./helperFuncs').stateFips,
+var state          = require('./helperFuncs').state,
     regionId       = require("./helperfuncs").regionId,
     determineMajor = require('./helperFuncs').determineMajor;
 
@@ -66,13 +66,13 @@ function packageParams (params, prevParams) {
 
   var SAT_score   = '',
       ACT_score   = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : '',
-      statefips   = stateFips(finalParams.stateFips),
+      states   = state(finalParams.state),
       regionid    = regionId(finalParams.regionId),
       school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : '',
       school_cost = '',
       major       = determineMajor(finalParams.major);
 
-  var urlParams =  ACT_score + SAT_score + statefips+regionid+ school_cost + school_size + major
+  var urlParams =  ACT_score + SAT_score +states+regionid+ school_cost + school_size + major
     console.log('Url: ' + urlParams)
   return {
     urlParams: urlParams,
