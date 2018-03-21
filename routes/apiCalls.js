@@ -3,16 +3,16 @@ var token = 'dd0abd72024442a793eb1b21c2ec2f27'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //import helper functions
-var determineLocation = require('./helperFuncs').determineLocation
+var stateFips = require('./helperFuncs').stateFips
 var determineMajor = require('./helperFuncs').determineMajor
 
 
 function callDialogApi (query, prevParams, res) {
-    //TODO - change this to req.body.prevParams when the front end is incorporated 
+    //TODO - change this to req.body.prevParams when the front end is incorporated
 
     prevParams = JSON.parse(prevParams)
 
-    axios.post('https://api.dialogflow.com/v1/query?v=20150910', 
+    axios.post('https://api.dialogflow.com/v1/query?v=20150910',
     {
         "lang": "en",
         "query": query,
@@ -22,7 +22,7 @@ function callDialogApi (query, prevParams, res) {
     },
     {
         headers: {
-            Authorization: 'Bearer ' + token 
+            Authorization: 'Bearer ' + token
         }
     }).then(result => {
         var data = result.data
@@ -36,7 +36,7 @@ function callDialogApi (query, prevParams, res) {
             res.send(JSON.stringify(fallbackMsg))
             return
         }
-        
+
         callCollegeAPI(result.parameters, prevParams, res, fallbackMsg)
     }).catch(err => {
         console.log('------ERROR---------')
@@ -50,7 +50,7 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
 
     var urlParams = paramsObj.urlParams
     var finalParams = paramsObj.finalParams
-    
+
     var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size'
 
 
@@ -68,24 +68,24 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
 
 //alter this as more parameters, turns parameters into url strings for use in college scorecard API call
 function packageParams (params, prevParams) {
-    
+
     var finalParams = reconcileParams(params, prevParams)
-    
+
     //might need to change the refernces on params later...
     var SAT_score = ''
-    
+
     //search for range of ACT scores (+3, -5)
     var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
-    
-    var school_location = determineLocation(finalParams.school_location)
-    
+
+    var statefips = stateFips(finalParams.stateFips)
+
     var school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : ''
-    
+
     var school_cost = ''
 
     var major = determineMajor(finalParams.major)
 
-    var urlParams =  ACT_score + SAT_score + school_location + school_cost + school_size + major
+    var urlParams =  ACT_score + SAT_score + statefips + school_cost + school_size + major
 
     console.log('Url: ' + urlParams)
 
@@ -125,7 +125,3 @@ module.exports = callDialogApi
 //     {"ACT_score":"29 ","SAT_score":"null","school_size":"null","school_size1":"null","location":"null","cost":null}
 // )
 //
-
-
-
-

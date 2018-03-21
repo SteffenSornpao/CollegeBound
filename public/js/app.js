@@ -83,7 +83,7 @@ $("#input").on("keyup", function(){
   if (event.keyCode === 13){
     event.preventDefault()
     submitQuery()
-    $("input").val(" ")
+    $("input").val("")
   }
 })
 
