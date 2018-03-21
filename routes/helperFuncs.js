@@ -21,6 +21,29 @@ function state(state){
   return url
 }
 
+// *** By city name ***
+function city(city){
+  if(!city){
+    return ''
+  }
+  city = city.toLowerCase().trim().replace(/ /g, "%20")
+  var url = ""
+  switch (city){
+    case city:
+      url = `school.city=${city}&`
+      break;
+//No location entered
+    case '':
+      url = ''
+      break;
+//Location not found
+    default:
+      url='errCityNotFound'
+      break;
+    }
+  return url
+}
+
 // *** By region ***
 function regionId(region){
   if(!region){
@@ -158,6 +181,7 @@ function determineMajor (major){
 
 module.exports = {
     state,
+    city,
     regionId,
     determineSchoolSize,
     determineMajor,
