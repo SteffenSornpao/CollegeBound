@@ -5,6 +5,7 @@ var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 //import helper functions
 var determineLocation = require('./helperFuncs').determineLocation
 var determineMajor = require('./helperFuncs').determineMajor
+var determineSchoolSize = require('./helperFuncs').determineSchoolSize
 
 
 function callDialogApi (query, prevParams, res) {
@@ -51,7 +52,7 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
     var urlParams = paramsObj.urlParams
     var finalParams = paramsObj.finalParams
     
-    var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size'
+    var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url'
 
 
     var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`
@@ -62,7 +63,7 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
         res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
-        res.end(fallbackMsg)
+        res.end(JSON.stringify(fallbackMsg))
     })
 }
 
@@ -79,7 +80,7 @@ function packageParams (params, prevParams) {
     
     var school_location = determineLocation(finalParams.school_location)
     
-    var school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : ''
+    var school_size = determineSchoolSize(finalParams.school_size, finalParams.school_size1)
     
     var school_cost = ''
 

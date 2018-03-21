@@ -218,10 +218,10 @@ function determineLocation (location) {
         case '':
             url = ''
             break;
-        //location not found
+        
+        //search using city instead
         default:
-            //just want to get error message
-            url='askjdnasndasd'
+            url=`school.city=${location}&`
             break;
     }
 
@@ -231,7 +231,35 @@ function determineLocation (location) {
 }
 
 function determineSchoolSize (school_size, school_size1){
-    
+    var sizeUrl = ''
+
+    if(school_size && school_size1){
+        sizeUrl = `2015.student.size__range=${school_size1}..${school_size}&`
+
+    }else if (school_size){
+
+        switch(school_size){
+            case 'small': 
+                sizeUrl = `2015.student.size__range=..5000&`
+                break;
+            case 'medium': 
+                sizeUrl = `2015.student.size__range=5000..15000&`
+                break;
+            case 'large': 
+                sizeUrl = `2015.student.size__range=15000..30000&`
+                break;
+            case 'huge': 
+                sizeUrl = `2015.student.size__range=30000..&`
+                break;
+            default: 
+                sizeUrl = `2015.student.size__range=..${school_size}&`
+        }
+    }else{
+        sizeUrl = ''
+    }
+
+    return sizeUrl
+
 }
 
 function determineMajor (major){
@@ -243,8 +271,8 @@ function determineMajor (major){
         case 'agriculture':
             majorUrl = `2015.academics.program_percentage.agriculture__range=${37005/1920718}..&`
             break;
-        case 'architechture':
-            majorUrl = `2015.academics.program_percentage.architechture__range=${8823/1920718}..&`
+        case 'architecture':
+            majorUrl = `2015.academics.program_percentage.architecture__range=${8823/1920718}..&`
             break;
         case 'culture':
             majorUrl = `2015.academics.program_percentage.ethnic_cultural_gender__range=${7840/1920718}..&`
@@ -345,3 +373,5 @@ module.exports = {
     determineSchoolSize,
     determineMajor,
 }
+
+console.log(determineSchoolSize('small', ''))

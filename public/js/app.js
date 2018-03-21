@@ -78,7 +78,7 @@ try {
             sessionStorage.setItem(key, finalParams[key])
         }
 
-
+        $('#results').text(data)
         console.log('It all worked!')
     })
 }
