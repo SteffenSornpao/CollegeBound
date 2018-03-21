@@ -15,7 +15,7 @@ function state(state){
       break;
 //Location not found
     default:
-      url='errNotFound'
+      url='errStateNotFound'
       break;
     }
   return url
@@ -29,35 +29,8 @@ function regionId(region){
   region = region.toLowerCase().trim()
   var url = ""
   switch (region) {
-    case "u.s. service school":
-      url = 'school.region_id=0&'
-      break;
-    case "new england":
-      url = 'school.region_id=1&'
-      break;
-    case 'mid east':
-      url = 'school.region_id=2&'
-      break;
-    case "great lakes":
-      url = 'school.region_id=3&'
-      break;
-    case "plains":
-      url = 'school.region_id=4&'
-      break;
-    case 'southeast':
-      url = 'school.region_id=5&'
-      break;
-    case 'southwest':
-      url = 'school.region_id=6&'
-      break;
-    case 'rocky mountains':
-      url = 'school.region_id=7&'
-      break;
-    case "far west":
-      url = 'school.region_id=8&'
-      break;
-    case "outlying areas":
-      url = 'school.region_id=9&'
+    case region:
+      url = `school.region_id=${region}&`
       break;
 //No location entered
     case '':
@@ -65,7 +38,7 @@ function regionId(region){
       break;
 //Location not found
     default:
-      url='errNotFound'
+      url='errRegionNotFound'
       break;
     }
   return url
