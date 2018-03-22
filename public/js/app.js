@@ -44,45 +44,82 @@ try {
     recognition.start();
   });
 
-  function submitQuery(event){
-    event.preventDefault()
-    // var query = $('#words').text()
-    var query = $('input').val().trim()
-
-    var previousParams = {
-        ACT_score: sessionStorage.getItem('ACT_score'),
-        SAT_score: sessionStorage.getItem('SAT_score'),
-        school_size: sessionStorage.getItem('school_size'),
-        school_size1: sessionStorage.getItem('school_size1'),
-        school_location: sessionStorage.getItem('school_location'),
-        school_cost: sessionStorage.getItem('school_cost'),
-        major: sessionStorage.getItem('major')
-    }
-
-    previousParams = JSON.stringify(previousParams)
-
-    console.log('Query: ' + query)
-    $.post('/results', {query: query, prevParams: previousParams}, function(data, status){
-        //we'll do something here to show data later
-        console.log(JSON.parse(data))
-
-        var finalParams = JSON.parse(data).finalParams
-
-        //store all params in session storage
-        for (key in finalParams){
-            //don't log school_size1
-            if(key === "school_size1"){
-                continue
-            }
-            console.log(key)
-            sessionStorage.setItem(key, finalParams[key])
-        }
-
-        $('#results').text(data)
-        console.log('It all worked!')
-    })
+  var previousParams = {
+    ACT_score: sessionStorage.getItem('ACT_score'),
+    SAT_score: sessionStorage.getItem('SAT_score'),
+    school_size: sessionStorage.getItem('school_size'),
+    school_size1: sessionStorage.getItem('school_size1'),
+    school_location: sessionStorage.getItem('school_location'),
+    school_cost: sessionStorage.getItem('school_cost'),
+    major: sessionStorage.getItem('major')
 }
 
-$('#submit-query').on('click', submitQuery)
+  $('#pp').val(JSON.stringify(previousParams))
 
+//   function submitQuery(event){
+//     event.preventDefault()
+//     // var query = $('#words').text()
+//     var query = $('input').val().trim()
+
+//     var previousParams = {
+//         ACT_score: sessionStorage.getItem('ACT_score'),
+//         SAT_score: sessionStorage.getItem('SAT_score'),
+//         school_size: sessionStorage.getItem('school_size'),
+//         school_size1: sessionStorage.getItem('school_size1'),
+//         school_location: sessionStorage.getItem('school_location'),
+//         school_cost: sessionStorage.getItem('school_cost'),
+//         major: sessionStorage.getItem('major')
+//     }
+
+//     previousParams = JSON.stringify(previousParams)
+
+//     console.log('Query: ' + query)
+//     $.post('/results', {query: query, prevParams: previousParams}, function(data, status){
+//         //we'll do something here to show data later
+//         // console.log(JSON.parse(data))
+//         console.log(data)
+
+//         var finalParams = JSON.parse(data).finalParams
+
+//         //store all params in session storage
+//         for (key in finalParams){
+//             //don't log school_size1
+//             if(key === "school_size1"){
+//                 continue
+//             }
+//             console.log(key)
+//             sessionStorage.setItem(key, finalParams[key])
+//         }
+
+//         $('#results').text(data)
+//         console.log('It all worked!')
+//     })
+// }
+
+// $('#submit-query').on('click', submitGetQuery)
+
+
+// function submitGetQuery (event) {
+//   event.preventDefault()
+
+//   console.log('clicked!')
+
+//   var previousParams = {
+//     ACT_score: sessionStorage.getItem('ACT_score'),
+//     SAT_score: sessionStorage.getItem('SAT_score'),
+//     school_size: sessionStorage.getItem('school_size'),
+//     school_size1: sessionStorage.getItem('school_size1'),
+//     school_location: sessionStorage.getItem('school_location'),
+//     school_cost: sessionStorage.getItem('school_cost'),
+//     major: sessionStorage.getItem('major')
+// }
+
+// var query = $('input').val().trim()
+
+// previousParams = JSON.stringify(previousParams)
+
+// $.get(`/results/${previousParams}/${query}`, function(data, status){
+//   console.log(data)
+// })
+// }
 //new file

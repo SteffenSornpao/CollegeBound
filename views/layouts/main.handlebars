@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <form action="/results" method="post">
+        <input type="text" name="query" value="mydata" />
+        <input id="pp" type="text" name="prevParams">
+        <input type="submit"/>
+    </form>
+    <div>
+        <div id="ACT_score_indicator">ACT</div>
+        <div id="school_location_indicator">location</div>
+        <div id="major_indicator">major</div>
+        <div id="school_size_indicator">size</div>
+    </div>
+    {{{body}}}
+    
+    <script src="./js/app.js"></script>
+</body>
+</html>

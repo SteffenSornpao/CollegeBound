@@ -1,5 +1,5 @@
 var axios = require('axios')
-var token = 'dd0abd72024442a793eb1b21c2ec2f27'
+var token = 'a58a86a575424bf1afed7628ed2cac06'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //import helper functions
@@ -60,9 +60,14 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
 
     axios.get(pathES6).then(result => {
         // console.log(result.data.results)
-        res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
+        // res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
+        res.render('results', {schools: result.data.results, finalParams: JSON.stringify(finalParams)})
+        // res.render('results', {
+        //     schools: [{name: one}, {name: two}]
+        // })
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
+        console.log(err)
         res.end(JSON.stringify(fallbackMsg))
     })
 }
@@ -73,7 +78,7 @@ function packageParams (params, prevParams) {
     var finalParams = reconcileParams(params, prevParams)
     
     //might need to change the refernces on params later...
-    var SAT_score = ''
+    var SAT_score = finalParams.SAT_score ? `2015.admissions.sat_scores.average.overall__range=${Number(finalParams.SAT_score) - 400}..${Number(finalParams.SAT_score) + 150}&` : ''
     
     //search for range of ACT scores (+3, -5)
     var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
