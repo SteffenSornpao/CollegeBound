@@ -101,8 +101,8 @@ function menOnly(men){
   }
   men = men.trim()
   var url = ""
-  switch (women) {
-    case women:
+  switch (men) {
+    case men:
       url = `school.men_only=${men}&`
       break;
 //No location entered
@@ -125,6 +125,9 @@ function determineSchoolSize (school_size, school_size1){
 
 // *** By major ***
 function determineMajor (major){
+  if (!major){
+    return ''
+  }
   var url = ''
 //have the percentage inside ${} just to highlight it (based on 2015-2016)
   switch(major){

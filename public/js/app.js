@@ -79,12 +79,14 @@ function submitQuery(){
       $("#results").html(" ")
       for (i=0;i<school.length;i++){
         $("#results").append(
-          "<div id='"+school[i].id+"' class='result'>"+school[i]['school.name']+"</div>"
+          "<div id='"+school[i].id+"' class='result'>"+
+            "<div class='result-title'>"+school[i]['school.name']+"</div>"+
+            "<div class='result-info'>"+school[i]['id']+"</div>"+
+          "</div>"
         )
         $("#results").animate({opacity: "1", top: "120px"}, 600)
       }
       console.log(finalParams)
-      console.log(finalParams[key])
       $("#params").append(
         "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
       )
@@ -92,11 +94,13 @@ function submitQuery(){
   })
 }
 
-// *** Press start ***
+// *** Start ***
 $("#a").on("click", function(){
   $("#start-info").fadeOut(500)
-  $("#start").animate({height: "60px", width: "100px"}, 1000, function(){
-    $("#logo").fadeIn(500)
+  $("#start").animate({height: "60px"}, 500, function(){
+    $("#start").animate({width: "100px"}, 500, function(){
+      $("#logo").fadeIn(500)
+    })
   })
 })
 
@@ -133,3 +137,28 @@ $("#speak").on("mouseenter", function(){
 $("#speak").on("mouseleave", function(){
   $("#speak").animate({backgroundColor: "#fff"}, 500)
 })
+
+// *** Click result ***
+$("#results").on("click", ".result", ".open", function(){
+  resultClose()
+  $(this).delay(600).animate({marginLeft: "530px"}, function(){
+    $(this).css("position", "fixed")
+      .animate({top: "120px", bottom: "0"})
+      .toggleClass("result open");
+      $(".result-info", this).fadeIn(300)
+  })
+})
+
+// *** Click opened result ***
+$("#results").on("click", ".open", function(){
+  resultClose()
+})
+
+function resultClose(){
+  $(".result-info").fadeOut(300)
+  $(".open").animate({height: "25px"}, function(){
+    $(".open").animate({marginLeft: "100px"})
+      .css({"position": "static", "height": "auto", "top": "auto", "bottom": "auto"})
+      .toggleClass("result open");
+  })
+}

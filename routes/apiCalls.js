@@ -62,23 +62,29 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
       res.end(fallbackMsg)
     })
 }
+var stuffUrl = [];
 
 //alter this as more parameters, turns parameters into url strings for use in college scorecard API call
 function packageParams (params, prevParams) {
   var finalParams = reconcileParams(params, prevParams)
 
-  var SAT_score   = '',
-      ACT_score   = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : '',
-      state       = State(finalParams.state),
-      city        = City(finalParams['geo-city']),
-      regionId    = RegionId(finalParams.regionId),
-      womenOnly   = WomenOnly(finalParams.womenOnly),
-      menOnly     = MenOnly(finalParams.menOnly),
-      school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : '',
-      school_cost = '',
-      major       = determineMajor(finalParams.major);
+  var stuff = {
+        "SAT_score"   : '',
+        "ACT_score"   : finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : '',
+        "state"       : State(finalParams.state),
+        "city"        : City(finalParams['geo-city']),
+        "regionId"    : RegionId(finalParams.regionId),
+        "womenOnly"   : WomenOnly(finalParams.womenOnly),
+        "menOnly"     : MenOnly(finalParams.menOnly),
+        "school_size" : finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : '',
+        "school_cost" : '',
+        "major"       : determineMajor(finalParams.major)
 
-  var urlParams =  ACT_score + SAT_score +state+city+regionId+womenOnly+menOnly+school_cost + school_size + major
+  }
+  var stuffs = Object.values(stuff).join("")
+  stuffUrl.indexOf(stuffs) === -1 ? stuffUrl.push(stuffs) : ""
+  console.log(stuffUrl)
+  var urlParams =  stuffUrl.join("")
     console.log('Url: ' + urlParams)
   return {
     urlParams: urlParams,
@@ -103,6 +109,7 @@ function reconcileParams (params, prevParams) {
     }
 
     console.log('Final params: ' + JSON.stringify(finalParams))
+    console.log('prev params: ' + JSON.stringify(prevParams))
     return(finalParams)
 }
 

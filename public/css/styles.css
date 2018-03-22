@@ -14,8 +14,9 @@ body {
 }
 #start {
   position: absolute;
-  background-color: #eee;
-  display: flex;
+  background-color: #143;
+  color: #fff;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -93,10 +94,12 @@ body {
 #results {
   position: absolute;
   overflow: scroll;
+  cursor: pointer;
   opacity: 0;
   top: 150px;
   width: 100%;
   height: calc(100% - 120px);
+  z-index: 1;
 }
 .result {
   font-size: 15px;
@@ -104,9 +107,23 @@ body {
   border-radius: 10px;
   color: #ffffff;
   margin: 1%;
-  margin-left: 70px;
+  margin-left: 100px;
   padding: 1%;
-  width: 40%;
+  width: 400px;
+}
+.result-info {
+  display: none;
+}
+.open {
+  font-size: 15px;
+  background-color: #000000;
+  border-radius: 10px;
+  color: #ffffff;
+  margin: 1%;
+  margin-left: 100px;
+  padding: 1%;
+  width: 400px;
+  z-index: 1;
 }
 #pagination {
   position: absolute;
