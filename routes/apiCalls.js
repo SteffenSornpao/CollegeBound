@@ -1,11 +1,12 @@
 var axios = require('axios')
-var token = 'dd0abd72024442a793eb1b21c2ec2f27'
+var token = 'a58a86a575424bf1afed7628ed2cac06'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //import helper functions
 var determineLocation = require('./helperFuncs').determineLocation
 var determineMajor = require('./helperFuncs').determineMajor
 var determineSchoolSize = require('./helperFuncs').determineSchoolSize
+var determineIncome = require('./helperFuncs').determineIncome
 
 
 function callDialogApi (query, prevParams, res) {
@@ -52,8 +53,11 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
     var urlParams = paramsObj.urlParams
     var finalParams = paramsObj.finalParams
     
-    var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url'
+    var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private'
 
+    var incomeFieldString = determineIncome(finalParams.family_income)
+
+    fieldsReturned += incomeFieldString
 
     var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`
     console.log('Final url: ' + pathES6)
@@ -73,7 +77,7 @@ function packageParams (params, prevParams) {
     var finalParams = reconcileParams(params, prevParams)
     
     //might need to change the refernces on params later...
-    var SAT_score = ''
+    var SAT_score = finalParams.SAT_score ? `2015.admissions.sat_scores.average.overall__range=${Number(finalParams.SAT_score) - 400}..${Number(finalParams.SAT_score) + 150}&` : ''
     
     //search for range of ACT scores (+3, -5)
     var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
@@ -81,12 +85,10 @@ function packageParams (params, prevParams) {
     var school_location = determineLocation(finalParams.school_location)
     
     var school_size = determineSchoolSize(finalParams.school_size, finalParams.school_size1)
-    
-    var school_cost = ''
 
     var major = determineMajor(finalParams.major)
 
-    var urlParams =  ACT_score + SAT_score + school_location + school_cost + school_size + major
+    var urlParams =  ACT_score + SAT_score + school_location  + school_size + major
 
     console.log('Url: ' + urlParams)
 

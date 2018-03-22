@@ -368,10 +368,31 @@ function determineMajor (major){
     return majorUrl
 }
 
+function determineIncome (income) {
+    var income = Number(income)
+
+    var incomeFieldString = ''
+
+    if (income <= 30000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.0-30000,2015.cost.net_price.private.by_income_level.0-30000`
+    }else if (income > 30000 && income <=48000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.300001-48000,2015.cost.net_price.private.by_income_level.30001-48000`
+    }else if (income > 48000 && income <=75000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.48001-75000,2015.cost.net_price.private.by_income_level.48001-75000`
+    }else if (income > 75000 && income <= 110000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.75001-110000,2015.cost.net_price.private.by_income_level.75001-110000`
+    }else if (income > 110000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.110001-plus,2015.cost.net_price.private.by_income_level.110001-plus`
+    }else{
+        incomeFieldString = ''
+    }
+
+    return incomeFieldString
+}
+
 module.exports = {
     determineLocation,
     determineSchoolSize,
     determineMajor,
+    determineIncome
 }
-
-console.log(determineSchoolSize('small', ''))
