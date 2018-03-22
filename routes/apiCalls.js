@@ -1,5 +1,5 @@
 var axios = require('axios')
-var token = 'a58a86a575424bf1afed7628ed2cac06'
+var token = 'dd0abd72024442a793eb1b21c2ec2f27'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 
@@ -85,7 +85,6 @@ function packageParams (params, prevParams) {
     //search for range of ACT scores (+3, -5)
     var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
     
-    var school_location = determineLocation(finalParams.school_location)
     
     var school_size = determineSchoolSize(finalParams.school_size, finalParams.school_size1)
 
@@ -95,7 +94,7 @@ function packageParams (params, prevParams) {
         city = City(finalParams['geo-city']),
         regionId = RegionId(finalParams.regionId),
         womenOnly = WomenOnly(finalParams.womenOnly),
-        menOnly = MenOnly(finalParams.menOnly),
+        menOnly = MenOnly(finalParams.menOnly)
 
     var urlParams =  ACT_score + SAT_score + school_size + major + state + city + regionId + womenOnly + menOnly
 
