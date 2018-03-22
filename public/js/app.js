@@ -51,13 +51,12 @@ function submitQuery(){
       SAT_score: sessionStorage.getItem('SAT_score'),
       school_size: sessionStorage.getItem('school_size'),
       school_size1: sessionStorage.getItem('school_size1'),
-      school_location: sessionStorage.getItem('school_location'),
       regionId: sessionStorage.getItem('regionId'),
       "geo-city": sessionStorage.getItem('geo-city'),
       state: sessionStorage.getItem('state'),
       womenOnly: sessionStorage.getItem('womenOnly'),
       menOnly: sessionStorage.getItem('menOnly'),
-      school_cost: sessionStorage.getItem('school_cost'),
+      family_income: sessionStorage.getItem('school_cost'),
       major: sessionStorage.getItem('major')
   }
   previousParams = JSON.stringify(previousParams)
@@ -65,8 +64,8 @@ function submitQuery(){
   $.post('/results', {query: query, prevParams: previousParams}, function(data, status){
       var info = JSON.parse(data),
           finalParams = info.finalParams,
-          school = info.schools,
-          id =
+          school = info.schools
+      
       console.log(info)
       // store all params in session storage
       for (key in finalParams){

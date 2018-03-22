@@ -22,6 +22,7 @@ function state(state){
   return url
 }
 
+
 // *** By city name ***
 function city(city){
   if(!city){
@@ -120,6 +121,35 @@ function menOnly(men){
 
 // *** By school size ***
 function determineSchoolSize (school_size, school_size1){
+
+    var sizeUrl = ''
+
+    if(school_size && school_size1){
+        sizeUrl = `2015.student.size__range=${school_size1}..${school_size}&`
+
+    }else if (school_size){
+
+        switch(school_size){
+            case 'small': 
+                sizeUrl = `2015.student.size__range=..5000&`
+                break;
+            case 'medium': 
+                sizeUrl = `2015.student.size__range=5000..15000&`
+                break;
+            case 'large': 
+                sizeUrl = `2015.student.size__range=15000..30000&`
+                break;
+            case 'huge': 
+                sizeUrl = `2015.student.size__range=30000..&`
+                break;
+            default: 
+                sizeUrl = `2015.student.size__range=..${school_size}&`
+        }
+    }else{
+        sizeUrl = ''
+    }
+
+    return sizeUrl
 
 }
 
@@ -228,6 +258,28 @@ function determineMajor (major){
   return url
 }
 
+function determineIncome (income) {
+    var income = Number(income)
+
+    var incomeFieldString = ''
+
+    if (income <= 30000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.0-30000,2015.cost.net_price.private.by_income_level.0-30000`
+    }else if (income > 30000 && income <=48000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.300001-48000,2015.cost.net_price.private.by_income_level.30001-48000`
+    }else if (income > 48000 && income <=75000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.48001-75000,2015.cost.net_price.private.by_income_level.48001-75000`
+    }else if (income > 75000 && income <= 110000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.75001-110000,2015.cost.net_price.private.by_income_level.75001-110000`
+    }else if (income > 110000){
+        incomeFieldString = `,2015.cost.net_price.public.by_income_level.110001-plus,2015.cost.net_price.private.by_income_level.110001-plus`
+    }else{
+        incomeFieldString = ''
+    }
+
+    return incomeFieldString
+}
+
 module.exports = {
     state,
     city,
@@ -236,4 +288,6 @@ module.exports = {
     menOnly,
     determineSchoolSize,
     determineMajor,
+    determineIncome
+
 }
