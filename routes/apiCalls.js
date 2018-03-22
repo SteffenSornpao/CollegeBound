@@ -4,8 +4,10 @@ var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //Helper functions
 var State          = require('./helperFuncs').state,
-    City       = require("./helperfuncs").city,
+    City           = require("./helperfuncs").city,
     RegionId       = require("./helperfuncs").regionId,
+    WomenOnly      = require("./helperfuncs").womenOnly,
+    MenOnly      = require("./helperfuncs").menOnly,
     determineMajor = require('./helperFuncs').determineMajor;
 
 
@@ -49,7 +51,7 @@ function callCollegeAPI (params, prevParams, res, fallbackMsg) {
     var paramsObj   = packageParams(params, prevParams),
         urlParams   = paramsObj.urlParams,
         finalParams = paramsObj.finalParams,
-        fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size',
+        fieldsReturned = 'school.name,id',
         pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`;
     console.log('Final url: ' + pathES6)
 
@@ -70,11 +72,13 @@ function packageParams (params, prevParams) {
       state       = State(finalParams.state),
       city        = City(finalParams['geo-city']),
       regionId    = RegionId(finalParams.regionId),
+      womenOnly   = WomenOnly(finalParams.womenOnly),
+      menOnly     = MenOnly(finalParams.menOnly),
       school_size = finalParams.school_size ? `2015.student.size__range=..${finalParams.school_size}&` : '',
       school_cost = '',
       major       = determineMajor(finalParams.major);
 
-  var urlParams =  ACT_score + SAT_score +state+city+regionId+ school_cost + school_size + major
+  var urlParams =  ACT_score + SAT_score +state+city+regionId+womenOnly+menOnly+school_cost + school_size + major
     console.log('Url: ' + urlParams)
   return {
     urlParams: urlParams,
