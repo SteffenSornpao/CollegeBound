@@ -75,6 +75,11 @@ function submitQuery(){
               continue
           }
           sessionStorage.setItem(key, finalParams[key])
+          console.log(finalParams)
+          $("#params").append(
+            "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
+          )
+          $("#params").animate({left:"-=120px"}, 600)
       }
       $("#results").html(" ")
       for (i=0;i<school.length;i++){
@@ -86,11 +91,6 @@ function submitQuery(){
         )
         $("#results").animate({opacity: "1", top: "120px"}, 600)
       }
-      console.log(finalParams)
-      $("#params").append(
-        "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
-      )
-      $("#params").animate({left:"-=120px"}, 600)
   })
 }
 
@@ -122,9 +122,11 @@ $("#reset").on("mouseleave", function(){
 })
 $("#reset").on("click", function(){
   sessionStorage.clear();
+  console.log("start")
   $("#results").fadeOut(500, function(){
     $("#results").html("").fadeIn(100)
   })
+  console.log("end")
   $("#params").fadeOut(500, function(){
     $("#params").css("left", "100%").html("").fadeIn(100)
   })
@@ -141,7 +143,7 @@ $("#speak").on("mouseleave", function(){
 // *** Click result ***
 $("#results").on("click", ".result", ".open", function(){
   resultClose()
-  $(this).delay(600).animate({marginLeft: "530px"}, function(){
+  $(this).delay(600).animate({marginLeft: "540px"}, function(){
     $(this).css("position", "fixed")
       .animate({top: "120px", bottom: "0"})
       .toggleClass("result open");
