@@ -37,7 +37,8 @@ catch(e) {
 
     // Add the current transcript to the contents of our Note.
     noteContent += transcript;
-    $('#words').text(noteContent);
+    $('#input').val(noteContent);
+    console.log(event.results)
   }
 
   $('#speak').on('click', function(e) {
@@ -83,15 +84,19 @@ function submitQuery(){
       }
       $("#results").html(" ")
 
-// *** Results append to DOM ***
-      for (i=0;i<school.length;i++){
-        $("#results").append(
-          `<div id='${school[i].id}' class='result'>
-            <div class='result-title'>${school[i]['school.name']}</div>
-            <div class='result-info'>${school[i]['id']}</div>
-          </div>`
-        )
-        $(".result").animate({opacity: "1"}, 600)
+      if(school){
+        for (i=0;i<school.length;i++){
+          $("#results").append(
+            "<div id='"+school[i].id+"' class='result'>"+
+              "<div class='result-title'>"+school[i]['school.name']+"</div>"+
+              "<div class='result-info'>"+school[i]['id']+"</div>"+
+            "</div>"
+          )
+          $("#results").animate({opacity: "1", top: "120px"}, 600)
+        }
+      }else{
+        //DISPLAYING THE ERROR MESSAGE CAN GO HERE
+        console.log(info)
       }
       $("#results").animate({top: "120px"}, 600)
   })

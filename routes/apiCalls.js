@@ -1,5 +1,5 @@
 var axios = require('axios')
-var token = 'dd0abd72024442a793eb1b21c2ec2f27'
+var token = 'a58a86a575424bf1afed7628ed2cac06'
 var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 
@@ -13,7 +13,22 @@ var State          = require('./helperFuncs').state,
     determineSchoolSize = require('./helperFuncs').determineSchoolSize,
     determineIncome = require('./helperFuncs').determineIncome
 
+var noResultsPhrases = [
+`I couldn't find any results! 
+Try searching again`,
+`I couldn't find any results! 
+Go with your gut instead`,
+`I couldn't find any results!`,
+`Look to the person on your left. Now look to the person on your right. 
+Hopefully one of them knows, because I couldn't find any results!`,
+`I couldn't find any results! 
+So just like, follow your heart or something...`,
+`I couldn't find any results! 
+Maybe college isn't for you`,
+`In the future jobs will be obsolete because computers like me will run everything, so you won't really need to go to college. 
+Also, I couldn't find any results!`
 
+]
 
 function callDialogApi (query, prevParams, res) {
     //TODO - change this to req.body.prevParams when the front end is incorporated
@@ -43,7 +58,7 @@ function callDialogApi (query, prevParams, res) {
             res.send(JSON.stringify(fallbackMsg))
             return
           }
-        callCollegeAPI(result.parameters, prevParams, res, fallbackMsg)
+        callCollegeAPI(result.parameters, prevParams, res)
     }).catch(err => {
         console.log('------ERROR---------')
         console.log(err)
@@ -51,25 +66,36 @@ function callDialogApi (query, prevParams, res) {
 }
 
 
-function callCollegeAPI (params, prevParams, res, fallbackMsg) {
+function callCollegeAPI (params, prevParams, res) {
 
     var paramsObj   = packageParams(params, prevParams),
         urlParams   = paramsObj.urlParams,
         finalParams = paramsObj.finalParams,
-        fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private'
-        pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`,
+        fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private',
         incomeFieldString = determineIncome(finalParams.family_income)
-
+        
         fieldsReturned += incomeFieldString
+        
+    var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`
 
     
     console.log('Final url: ' + pathES6)
 
     axios.get(pathES6).then(result => {
-      res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
+        //search was succesful, but no schools matched
+        if(result.data.results.length === 0){
+            var randNum = Math.floor(Math.random() * noResultsPhrases.length),
+            phrase = noResultsPhrases[randNum]
+            res.end(JSON.stringify({errorMsg: phrase}))
+            return
+        }
+        //search was successful
+        res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
-        res.end(JSON.stringify(fallbackMsg))
+        var randNum = Math.floor(Math.random() * noResultsPhrases.length),
+            phrase = noResultsPhrases[randNum]
+        res.end(JSON.stringify({errorMsg: phrase}))
     })
 }
 var stuffUrl = [];
@@ -115,6 +141,12 @@ function reconcileParams (params, prevParams) {
     //if there's a new input use that, if not use sessionStorage item, if not use an empty string
     for (key in params){
         finalParams[key] = params[key] ? params[key].trim() : prevParams[key] ? prevParams[key].trim() : ''
+        //get rid of olf city if there's only a new state (and not a new city)
+        if (key === "geo-city"){
+            if(params['state'] && !params['geo-city']){
+                finalParams[key] = ''
+            }
+        }
         console.log('-----'+key+'------')
         console.log("Old: " + prevParams[key])
         console.log('New: ' + params[key])
