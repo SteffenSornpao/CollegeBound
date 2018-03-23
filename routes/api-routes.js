@@ -3,6 +3,7 @@
 var Sequelize = require("sequelize");
 // Requiring our college model
 var db = require("../models");
+const Op = Sequelize.Op;
 
 // Routes
 // ===================================================================
@@ -31,10 +32,13 @@ module.exports = function (app) {
 
   // Get route for returning posts of a specific category
   app.get("/api/colleges", function (req, res) {
+    console.log("In Get route");
     db.college.findAll({
+      limit: 10,
       where: {
-        searchCount: { [Op.gt]: 5 }
-      }
+        searchCount: { [Op.gt]: 2 }
+      },
+      order: [['searchCount', 'DESC']]
     })
       .then(function (dbcollege) {
         res.json(dbcollege);

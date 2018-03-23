@@ -95,11 +95,36 @@ function submitQuery(){
             "</div>"
           )
           $("#results").animate({opacity: "1", top: "120px"}, 600)
+          
         }
+        upsertDB(school)
       }else{
         //DISPLAYING THE ERROR MESSAGE CAN GO HERE
         console.log(info)
       }
+  })
+}
+
+//upsert schools into DB
+function upsertDB (schools) {
+  schools.forEach((school) => {
+    
+    console.log('School ID: ' + school.id)
+    console.log('School name: ' + school["school.name"])
+    
+    $.ajax('/api/colleges', {
+      method: 'PUT',
+      data: {
+        schoolid: school.id,
+        schoolname: school["school.name"] 
+      },
+      success: function(data, status){
+        console.log('Upserted!')
+      },
+      error: function(something, string){
+        console.log('Fuck...')
+      }
+    })
   })
 }
 
