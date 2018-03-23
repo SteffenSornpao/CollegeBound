@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
-    var College = sequelize.define("college", {
-      schoolid: DataTypes.INTEGER,
+    var college = sequelize.define("college", {
+      schoolid: {type: DataTypes.INTEGER, allowNull: false, primaryKey: true}, 
       schoolname: DataTypes.STRING,
       searchCount: DataTypes.INTEGER
     });
