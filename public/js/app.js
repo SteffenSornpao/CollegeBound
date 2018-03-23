@@ -37,7 +37,8 @@ catch(e) {
 
     // Add the current transcript to the contents of our Note.
     noteContent += transcript;
-    $('#words').text(noteContent);
+    $('#input').val(noteContent);
+    console.log(event.results)
   }
 
   $('#speak').on('click', function(e) {
@@ -45,7 +46,7 @@ catch(e) {
   });
 
 function submitQuery(){
-  var query = $('input').val().trim()
+  var query = $('#input').val().trim()
   var previousParams = {
       ACT_score: sessionStorage.getItem('ACT_score'),
       SAT_score: sessionStorage.getItem('SAT_score'),
