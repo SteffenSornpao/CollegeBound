@@ -76,20 +76,29 @@ function submitQuery(){
           }
           sessionStorage.setItem(key, finalParams[key])
           console.log(finalParams)
-          $("#params").append(
-            "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
-          )
-          $("#params").animate({left:"-=120px"}, 600)
+          //only show param if it's not an empty string
+          if(finalParams[key]){
+            $("#params").append(
+              "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
+            )
+            $("#params").animate({left:"-=120px"}, 600)
+          }
       }
       $("#results").html(" ")
-      for (i=0;i<school.length;i++){
-        $("#results").append(
-          "<div id='"+school[i].id+"' class='result'>"+
-            "<div class='result-title'>"+school[i]['school.name']+"</div>"+
-            "<div class='result-info'>"+school[i]['id']+"</div>"+
-          "</div>"
-        )
-        $("#results").animate({opacity: "1", top: "120px"}, 600)
+      
+      if(school){
+        for (i=0;i<school.length;i++){
+          $("#results").append(
+            "<div id='"+school[i].id+"' class='result'>"+
+              "<div class='result-title'>"+school[i]['school.name']+"</div>"+
+              "<div class='result-info'>"+school[i]['id']+"</div>"+
+            "</div>"
+          )
+          $("#results").animate({opacity: "1", top: "120px"}, 600)
+        }
+      }else{
+        //DISPLAYING THE ERROR MESSAGE CAN GO HERE
+        console.log(info)
       }
   })
 }

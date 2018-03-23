@@ -124,6 +124,9 @@ function determineSchoolSize (school_size, school_size1){
 
     var sizeUrl = ''
 
+    school_size = school_size.replace(/,/g, '')
+    school_size1 = school_size1.replace(/,/g, '')
+
     if(school_size && school_size1){
         sizeUrl = `2015.student.size__range=${school_size1}..${school_size}&`
 
@@ -258,9 +261,11 @@ function determineMajor (major){
   return url
 }
 
-function determineIncome (income) {
-    var income = Number(income)
+function determineIncome (moneys) {
+  //take out comma, turn it into a number  
+  var income = Number(moneys.replace(/,/g, ''))
 
+    console.log(income)
     var incomeFieldString = ''
 
     if (income <= 30000){
@@ -277,6 +282,7 @@ function determineIncome (income) {
         incomeFieldString = ''
     }
 
+    console.log('Income string: ' + incomeFieldString )
     return incomeFieldString
 }
 
