@@ -82,7 +82,15 @@ function callCollegeAPI (params, prevParams, res) {
     console.log('Final url: ' + pathES6)
 
     axios.get(pathES6).then(result => {
-      res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
+        //search was succesful, but no schools matched
+        if(result.data.results.length === 0){
+            var randNum = Math.floor(Math.random() * noResultsPhrases.length),
+            phrase = noResultsPhrases[randNum]
+            res.end(JSON.stringify({errorMsg: phrase}))
+            return
+        }
+        //search was successful
+        res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
         var randNum = Math.floor(Math.random() * noResultsPhrases.length),
@@ -133,6 +141,12 @@ function reconcileParams (params, prevParams) {
     //if there's a new input use that, if not use sessionStorage item, if not use an empty string
     for (key in params){
         finalParams[key] = params[key] ? params[key].trim() : prevParams[key] ? prevParams[key].trim() : ''
+        //get rid of olf city if there's only a new state (and not a new city)
+        if (key === "geo-city"){
+            if(params['state'] && !params['geo-city']){
+                finalParams[key] = ''
+            }
+        }
         console.log('-----'+key+'------')
         console.log("Old: " + prevParams[key])
         console.log('New: ' + params[key])
