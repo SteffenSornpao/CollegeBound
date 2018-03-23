@@ -1,7 +1,7 @@
 // Dependencies
 // =============================================================
-
-// Requiring our College model
+var Sequelize = require("sequelize");
+// Requiring our college model
 var db = require("../models");
 
 // Routes
@@ -13,57 +13,102 @@ var db = require("../models");
 // the database we need to insert it with a searchCount of 1.
 // If we dont do this we will get duplicate records.
 // ===================================================================
-module.exports = function(app) {
+module.exports = function (app) {
 
   // Get rotue for retrieving a single college
   // We can use this to see if a college exist so we can
   // determine to upate or insert the college as stated above
-  app.get("/api/colleges/:id", function(req, res) {
-    db.College.findOne({
+  app.get("/api/colleges/:id", function (req, res) {
+    db.college.findOne({
       where: {
         id: req.params.id
       }
     })
-    .then(function(dbPost) {
-      res.json(dbPost);
-    });
+      .then(function (dbPost) {
+        res.json(dbPost);
+      });
   });
 
   // Get route for returning posts of a specific category
-  app.get("/api/colleges", function(req, res) {
-    db.College.findAll({
+  app.get("/api/colleges", function (req, res) {
+    db.college.findAll({
       where: {
-        searchCount: { [Op.gt] : 5 }
+        searchCount: { [Op.gt]: 5 }
       }
     })
-    .then(function(dbCollege) {
-      res.json(dbCollege);
-    });
+      .then(function (dbcollege) {
+        res.json(dbcollege);
+      });
   });
 
   // POST route for saving a new college
-  app.post("/api/colleges", function(req, res) {
+  app.post("/api/colleges", function (req, res) {
     //console.log(req.body);
-    db.College.create({
+    db.college.create({
       schoolid: req.body.schoolid,
-      schoolname: req.body.school
+      schoolname: req.body.school,
+      searchCount: 1
     })
-    .then(function(dbCollege) {
-      res.json(dbCollege);
-    });
+      .then(function (dbcollege) {
+        res.json(dbcollege);
+      });
   });
 
 
   // PUT route for updating college
-  app.put("/api/colleges", function(req, res) {
-    db.College.update({
-        searchCount: parseInt(req.body.searchCount) + 1
-      }, {
-        where: {
-          id: req.body.id
-        }
-      }).then(function(dbCollege) {
-        res.json(dbCollege);
+  // app.put("/api/colleges", function (req, res) {
+  //   db.college.update({
+  //     searchCount: parseInt(req.body.searchCount) + 1
+  //   }, {
+  //       where: {
+  //         id: req.body.id
+  //       }
+  //     }).then(function (dbcollege) {
+  //       res.json(dbcollege);
+  //     });
+  // });
+
+  app.put("/api/colleges", function (req, res) {
+    //console.log("req body:", req.body.schoolid);
+    db.college.findOrCreate({   
+      where: { schoolid: req.body.schoolid },
+      defaults: {
+        searchCount: 1,
+        schoolname: req.body.schoolname
+      }
+    }).spread(function (college, created) {
+      if (!created) {
+        college.increment("searchCount", { by: 1 });
+      }
+      college.reload().then(function () {
+        res.json(college);
       });
+    });
   });
+
 }
+  // db.college.upsert({
+  //   schoolid: req.body.schoolid,
+  //   searchCount: Sequelize.literal( "searchCount + 1" )
+  // }).then(function (test) {
+  //   if (test) {
+  //     res.status(200);
+  //     res.send("Successfully stored");
+  //   } else {
+  //     res.status(200);
+  //     res.send("Successfully inserted");
+  //   }
+  // })
+
+  // app.upsert({
+  //   schoolid: schoolid,
+  //   searchCount: searchCount
+  // }).then(function (test) {
+  //   if (test) {
+  //     res.status(200);
+  //     res.send("Successfully stored");
+  //   } else {
+  //     res.status(200);
+  //     res.send("Successfully inserted");
+  //   }
+  // })
