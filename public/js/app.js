@@ -45,28 +45,27 @@ catch(e) {
   });
 
 function submitQuery(){
-  var query = $('input').val().trim()
-  var previousParams = {
-      ACT_score: sessionStorage.getItem('ACT_score'),
-      SAT_score: sessionStorage.getItem('SAT_score'),
-      school_size: sessionStorage.getItem('school_size'),
-      school_size1: sessionStorage.getItem('school_size1'),
-      regionId: sessionStorage.getItem('regionId'),
-      "geo-city": sessionStorage.getItem('geo-city'),
-      state: sessionStorage.getItem('state'),
-      womenOnly: sessionStorage.getItem('womenOnly'),
-      menOnly: sessionStorage.getItem('menOnly'),
+  var query = $('input').val().trim(),
+      previousParams = {
+      ACT_score:     sessionStorage.getItem('ACT_score'),
+      SAT_score:     sessionStorage.getItem('SAT_score'),
+      school_size:   sessionStorage.getItem('school_size'),
+      school_size1:  sessionStorage.getItem('school_size1'),
+      regionId:      sessionStorage.getItem('regionId'),
+      "geo-city":    sessionStorage.getItem('geo-city'),
+      state:         sessionStorage.getItem('state'),
+      womenOnly:     sessionStorage.getItem('womenOnly'),
+      menOnly:       sessionStorage.getItem('menOnly'),
       family_income: sessionStorage.getItem('school_cost'),
-      major: sessionStorage.getItem('major')
+      major:         sessionStorage.getItem('major')
   }
+
   previousParams = JSON.stringify(previousParams)
 
   $.post('/results', {query: query, prevParams: previousParams}, function(data, status){
-      var info = JSON.parse(data),
+      var info        = JSON.parse(data),
           finalParams = info.finalParams,
-          school = info.schools
-      
-      console.log(info)
+          school      = info.schools;
       // store all params in session storage
       for (key in finalParams){
           //don't log school_size1
@@ -74,22 +73,27 @@ function submitQuery(){
               continue
           }
           sessionStorage.setItem(key, finalParams[key])
-          console.log(finalParams)
-          $("#params").append(
-            "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
-          )
-          $("#params").animate({left:"-=120px"}, 600)
+// *** Param append to DOM ***
+          if (finalParams[key] !== ""){
+            $("#params").append(
+              "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
+            )
+            $("#params").animate({left:"-=120px"}, 600)
+          }
       }
       $("#results").html(" ")
+
+// *** Results append to DOM ***
       for (i=0;i<school.length;i++){
         $("#results").append(
-          "<div id='"+school[i].id+"' class='result'>"+
-            "<div class='result-title'>"+school[i]['school.name']+"</div>"+
-            "<div class='result-info'>"+school[i]['id']+"</div>"+
-          "</div>"
+          `<div id='${school[i].id}' class='result'>
+            <div class='result-title'>${school[i]['school.name']}</div>
+            <div class='result-info'>${school[i]['id']}</div>
+          </div>`
         )
-        $("#results").animate({opacity: "1", top: "120px"}, 600)
+        $(".result").animate({opacity: "1"}, 600)
       }
+      $("#results").animate({top: "120px"}, 600)
   })
 }
 

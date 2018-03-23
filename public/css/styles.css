@@ -16,7 +16,8 @@ body {
   position: absolute;
   background-color: #143;
   color: #fff;
-  display: flex;
+  display: none;
+  /* display: flex; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -94,14 +95,14 @@ body {
 #results {
   position: absolute;
   overflow: scroll;
-  cursor: pointer;
-  opacity: 0;
   top: 150px;
   width: 100%;
   height: calc(100% - 120px);
   z-index: 1;
 }
 .result {
+  cursor: pointer;
+  opacity: 0;
   font-size: 15px;
   background-color: #000000;
   border-radius: 10px;
