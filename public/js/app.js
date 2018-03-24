@@ -8,22 +8,31 @@ catch(e) {
   $('.app').hide();
 }
 
-  recognition.onstart = function() {
-    console.log('Voice recognition activated.');
-  }
+recognition.onstart = function() {
+  console.log('Voice recognition activated.');
+  // active()
+}
 
-  recognition.onspeechend = function() {
-    console.log('You were quiet for a while so voice recognition turned itself off.');
+function active(){
+  $("#speak").animate({backgroundColor: "#ff0"}, 500)
+  $("#speak").animate({backgroundColor: "#fff"}, 500)
+  active()
+}
 
-    //setTimeout necessary to get query (for now)
-    setTimeout(submitQuery, 500)
-  }
+recognition.onspeechend = function() {
+  console.log('You were quiet for a while so voice recognition turned itself off.');
+//setTimeout necessary to get query (for now)
+  setTimeout(function(){
+    submitQuery()
+    $("input").val("")
+  }, 500)
+}
 
-  recognition.onerror = function(event) {
-    if(event.error == 'no-speech') {
-      console.log('No speech was detected. Try again.');
-    };
-  }
+recognition.onerror = function(event) {
+  if(event.error == 'no-speech') {
+    console.log('No speech was detected. Try again.');
+  };
+}
 
   recognition.onresult = function(event) {
     var noteContent =''
@@ -41,9 +50,7 @@ catch(e) {
     console.log(event.results)
   }
 
-  $('#speak').on('click', function(e) {
-    recognition.start();
-  });
+
 
 function submitQuery(){
   var query = $('input').val().trim(),
@@ -67,6 +74,7 @@ function submitQuery(){
       var info        = JSON.parse(data),
           finalParams = info.finalParams,
           school      = info.schools;
+          console.log(info)
       // store all params in session storage
       for (key in finalParams){
           //don't log school_size1
@@ -102,11 +110,6 @@ function submitQuery(){
       }
       $(".result").animate({opacity: "1"}, 600)
       $("#results").animate({top: "120px"}, 600)
-  })
-  
-  $.post("/metadata", function(data){
-    var info = JSON.parse(data)
-    console.log(info)
   })
 }
 
@@ -144,12 +147,37 @@ $("#a").on("click", function(){
 })
 
 // *** Press enter ***
+$("#input").on("keydown", function(){
+  if (event.keyCode === 13){
+    $("#submit").css("backgroundColor", "#00f100")
+  }
+})
 $("#input").on("keyup", function(){
   if (event.keyCode === 13){
     event.preventDefault()
+    $("#submit").css("backgroundColor", "#eee")
     submitQuery()
     $("input").val("")
   }
+})
+
+// *** Submit button ***
+$("#submit").on("mouseenter", function(){
+  $("#submit").animate({backgroundColor: "#00ff00"}, 500)
+})
+$("#submit").on("mouseleave", function(){
+  $("#submit").animate({backgroundColor: "#eee"}, 500)
+})
+$("#submit").on("mousedown", function(){
+  $("#submit").css("backgroundColor", "#00f100")
+})
+$("#submit").on("mouseup", function(){
+  $("#submit").css("backgroundColor", "#00ff00")
+})
+$("#submit").on("click", function(){
+  event.preventDefault()
+  submitQuery()
+  $("input").val("")
 })
 
 // *** Reset button ***
@@ -178,6 +206,10 @@ $("#speak").on("mouseenter", function(){
 $("#speak").on("mouseleave", function(){
   $("#speak").animate({backgroundColor: "#fff"}, 500)
 })
+$('#speak').on('click', function(e) {
+  recognition.start();
+});
+
 
 // *** Click result ***
 $("#results").on("click", ".result", ".open", function(){

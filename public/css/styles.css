@@ -30,8 +30,10 @@ body {
   flex-direction: column;
 }
 #query-container {
+  background-color: #fff;
   position: absolute;
-  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
   height: 60px;
   width: 100%;
 }
@@ -53,10 +55,23 @@ body {
   position: absolute;
   font-size: 30px;
   text-align: right;
-  width: calc(100% - 200px);
+  width: calc(100% - 330px);
   height: 100%;
   left: 100px;
   padding: 0 20px;
+}
+#submit {
+  position: absolute;
+  display: flex;
+  font-size: 25px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  background-color: #eee;
+  height: 80%;
+  width: 120px;
+  right: 70px;
+  cursor: pointer;
 }
 #speak {
   position: absolute;
@@ -92,16 +107,16 @@ body {
   font-size: 20px;
   text-align: center;
 }
-#total-colleges {
+#total {
   position: absolute;
   background-color: #000;
   transform: rotate(-90deg);
   font-size: 15px;
-  padding: 0 10px;
+  padding: 3px 10px;
   color: #fff;
-  top: 238px;
-  left: -73px;
-  width: 150px;
+  top: 25%;
+  right: -30px;
+  width: 70px;
 }
 #results {
   position: absolute;
@@ -118,9 +133,9 @@ body {
   background-color: #000000;
   border-radius: 10px;
   color: #ffffff;
-  margin: 1%;
-  margin-left: 100px;
-  padding: 1%;
+  margin: 5px;
+  margin-left: 200px;
+  padding: 10px;
   width: 400px;
 }
 .result-info {
