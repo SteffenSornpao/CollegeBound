@@ -442,8 +442,9 @@ $("#next").on("click", function(){
     $("#results").html("")
     currentPage++
     console.log(currentPage)
-      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
+      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=2015.aid.loan_principal,2015.aid.pell_grant_rate,2015.cost.avg_net_price.private,2015.cost.avg_net_price.public,2015.student.size,2015.admissions.sat_scores.average.overall,school.women_only,school.men_only,2015.admissions.admission_rate.overall,school.men_only,school.women_only,school.ownership,id,school.name,school.city,school.state,school.zip,school.school_url,school.price_calculator_url&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
         var school = data.results
+        console.log(data)
         for (i=0;i<school.length;i++){
           var own
           switch (school[i]['school.ownership']){
@@ -548,7 +549,7 @@ $("#prev").on("click", function(){
     $("#results").html("")
     currentPage--
     // if (page*20-total <= 0) {
-      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
+      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=2015.aid.loan_principal,2015.aid.pell_grant_rate,2015.cost.avg_net_price.private,2015.cost.avg_net_price.public,2015.student.size,2015.admissions.sat_scores.average.overall,school.women_only,school.men_only,2015.admissions.admission_rate.overall,school.men_only,school.women_only,school.ownership,id,school.name,school.city,school.state,school.zip,school.school_url,school.price_calculator_url&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
         var school = data.results
         for (i=0;i<school.length;i++){
           var own
