@@ -179,7 +179,7 @@ function submitQuery(){
               }
 // *** Param HTML ***
               $("#params").append(
-                "<div class='param' value='"+key+"'>"+pv.toUpperCase()+"</div>"
+                "<div class='param' value='"+key+"'>"+pv+"</div>"
               )
               $("#params").animate({left:"-=120px"}, 600)
 
