@@ -1,3 +1,7 @@
+// *** Clear session storage on refresh ***
+if (performance.navigation.type == 1) {
+  sessionStorage.clear();
+}
 try {
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     var recognition = new SpeechRecognition();
@@ -51,7 +55,7 @@ recognition.onerror = function(event) {
   }
 
 
-
+var paramS = []
 function submitQuery(){
   var query = $('input').val().trim(),
       previousParams = {
@@ -75,7 +79,11 @@ function submitQuery(){
       var info        = JSON.parse(data),
           finalParams = info.finalParams,
           school      = info.schools;
-          console.log(info)
+      if (info.metadata !== undefined){
+        var total = info.metadata.total,
+            currentPage  = info.metadata.page,
+            totalPages = Math.ceil(total/20);
+      }
       // store all params in session storage
       for (key in finalParams){
           //don't log school_size1
@@ -85,24 +93,181 @@ function submitQuery(){
           sessionStorage.setItem(key, finalParams[key])
 // *** Param append to DOM ***
           if (finalParams[key] !== ""){
-            $("#params").append(
-              "<div class='param'>"+finalParams[key].toUpperCase()+"</div>"
-            )
-            $("#params").animate({left:"-=120px"}, 600)
+            if (paramS.includes(finalParams[key])){
+            } else {
+              paramS.push(finalParams[key])
+              var pv
+              switch (key){
+                case "ACT_score":
+                  pv = "ACT: "+finalParams[key]
+                  break
+                case "SAT_score":
+                  pv = "SAT: "+finalParams[key]
+                  break
+                case "major":
+                  pv = finalParams[key].substr(0,6)
+                  break
+                case "family_income":
+                  pv = "$"+finalParams[key]
+                  break
+                case "geo-city":
+                  pv = finalParams[key].substr(0,6)
+                  break
+                case "degree_type":
+                  if (finalParams[key] == 2){
+                    pv = "ASSOC"
+                  } else {
+                    pv = "BACH"
+                  }
+                  break
+                case "menOnly":
+                  pv = "MEN"
+                  break
+                case "womenOnly":
+                  pv = "WOMEN"
+                  break
+                case "school_size":
+                  if (!isNaN(finalParams[key])){
+                    if (finalParams[key]>=100000){
+                      pv = "100K+ PPL"
+                    } else {
+                      pv = finalParams[key]+" PPL"
+                    }
+                  }
+                  break
+                case "regionId":
+                  switch (finalParams[key]){
+                    case "0":
+                     pv = "US SERV"
+                     break
+                    case "1":
+                     pv = "N EAST"
+                     break
+                    case "2":
+                     pv = "MID EAST"
+                     break
+                    case "3":
+                     pv = "NORTH"
+                     break
+                    case "4":
+                     pv = "MIDWEST"
+                     break
+                    case "5":
+                     pv = "NORTH"
+                     break
+                    case "6":
+                     pv = "S EAST"
+                     break
+                    case "7":
+                     pv = "S WEST"
+                     break
+                    case "8":
+                     pv = "WEST"
+                     break
+                    case "9":
+                     pv = "US TERR"
+                     break
+                  }
+                  break
+                default:
+                  pv = finalParams[key]
+                  break
+              }
+// *** Param HTML ***
+              $("#params").append(
+                "<div class='param'>"+pv.toUpperCase()+"</div>"
+              )
+              $("#params").animate({left:"-=120px"}, 600)
+
+            }
           }
       }
+// *** Schools append to DOM ***
       $("#results").html(" ")
-      $("#total").text()
       if(school){
         for (i=0;i<school.length;i++){
+          var own
+          switch (school[i]['school.ownership']){
+            case 1:
+              own = "Public School"
+              var cost = school[i]['2015.cost.avg_net_price.public']
+              break
+            case 2:
+              own = "Private Non-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            case 3:
+              own = "Private For-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            }
+          var menO
+          switch (school[i]['school.men_only']){
+            case 1:
+              menO = "Men Only<br>"
+              break
+            case 0:
+              menO = ""
+              break
+            }
+          var womenO
+          switch (school[i]['school.women_only']){
+            case 1:
+              womenO = "Women Only<br>"
+              break
+            case 0:
+              womenO = ""
+              break
+          }
+          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
+            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
+          } else {
+            var adm = "n/a"
+          }
+          if (school[i]['2015.aid.pell_grant_rate'] !== null){
+            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
+          } else {
+            var pell = "n/a"
+          }
+          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
+            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
+          } else {
+            var admSat = "n/a"
+          }
+          if (school[i]['2015.student.size'] !== null){
+            var size = school[i]['2015.student.size']
+          } else {
+            var size = "n/a"
+          }
+          if (school[i]['2015.aid.loan_principal'] !== null){
+            var debt = school[i]['2015.aid.loan_principal']
+          } else {
+            var debt = "n/a"
+          }
+// *** Result HTML ***
           $("#results").append(
-            "<div id='"+school[i].id+"' class='result'>"+
-              "<div class='result-title'>"+school[i]['school.name']+"</div>"+
-              "<div class='result-info'>"+school[i]['id']+"</div>"+
-            "</div>"
+            `<div id='${school[i].id}' class='result'>
+              <div class='result-title'>
+                ${school[i]['school.name']}
+              </div>
+              <div class='result-info'>
+                <hr>
+                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
+                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
+                ${own}<br>
+                Average Cost: $${cost}<br>
+                ${menO}
+                ${womenO}
+                Admission Rate: ${adm}<br>
+                Avg SAT Score Admitted: ${admSat}<br>
+                Student Size: ${size}<br>
+                Percentage of Pell Grant Recipiants: ${pell}<br>
+                Median Debt for Graduates: ${debt}<br>
+              </div>
+            </div>`
           )
           $("#results").animate({opacity: "1", top: "120px"}, 600)
-
         }
         upsertDB(school)
       }else{
@@ -111,16 +276,28 @@ function submitQuery(){
       }
       $(".result").animate({opacity: "1"}, 600)
       $("#results").animate({top: "120px"}, 600)
+      if (total !== undefined){
+// *** Total update on Dom ***
+        $("#total").html(`Total: ${total}`)
+        $("#total").animate({right: "-32px"})
+// *** Pagination update on Dom ***
+        $("#next").animate({opacity: "1"})
+        $("#current-page").html(currentPage)
+        $("#total-pages").html(totalPages)
+        $("#page-number").animate({bottom: "0"})
+      } else {
+// *** No search results error ***
+        $("#err").animate({opacity: "1"}, 600)
+        setTimeout(()=>{
+          $("#err").animate({opacity: "0"}, 600)
+        }, 3000)
+      }
   })
 }
 
 //upsert schools into DB
 function upsertDB (schools) {
   schools.forEach((school) => {
-
-    console.log('School ID: ' + school.id)
-    console.log('School name: ' + school["school.name"])
-
     $.ajax('/api/colleges', {
       method: 'PUT',
       data: {
@@ -190,14 +367,15 @@ $("#reset").on("mouseleave", function(){
 })
 $("#reset").on("click", function(){
   sessionStorage.clear();
-  console.log("start")
+  paramS = []
   $("#results").fadeOut(500, function(){
     $("#results").html("").fadeIn(100)
   })
-  console.log("end")
   $("#params").fadeOut(500, function(){
     $("#params").css("left", "100%").html("").fadeIn(100)
   })
+  $("#total").animate({right: "-63px"})
+  $("#page-number").animate({bottom: "-50px"})
 })
 
 // *** Speak button ***
@@ -215,24 +393,30 @@ $('#speak').on('click', function(e) {
 // *** Click result ***
 $("#results").on("click", ".result", ".open", function(){
   resultClose()
-  $(this).delay(600).animate({marginLeft: "540px"}, function(){
+  $(this).delay(600).animate({marginLeft: "680px"}, function(){
     $(this).css("position", "fixed")
       .animate({top: "120px", bottom: "0"})
       .toggleClass("result open");
+      $(".result-title", this).animate({fontSize: "30px"})
       $(".result-info", this).fadeIn(300)
   })
 })
 
 // *** Click opened result ***
-$("#results").on("click", ".open", function(){
-  resultClose()
-})
+// $("#results").on("click", ".open", function(){
+//   resultClose()
+// })
 
 function resultClose(){
+  $(".result-title").animate({fontSize: "15px"})
   $(".result-info").fadeOut(300)
   $(".open").animate({height: "25px"}, function(){
-    $(".open").animate({marginLeft: "100px"})
+    $(".open").animate({marginLeft: "200px"})
       .css({"position": "static", "height": "auto", "top": "auto", "bottom": "auto"})
       .toggleClass("result open");
   })
 }
+
+$("#next").on("click", function(){
+  submitQuery()
+})

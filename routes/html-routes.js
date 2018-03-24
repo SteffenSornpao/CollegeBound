@@ -20,13 +20,6 @@ module.exports = function (app){
         getInfo(query, prevParams, res)
     })
 
-    // *** Metadata ***
-    // app.post("/metadata", function(req,res){
-    //   var data = req.body
-    //   console.log("********"+data)
-    //   getInfo(data, res)
-    // })
-
     //most viewed
     app.get('/mostviewed', function(req, res){
 

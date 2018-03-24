@@ -68,12 +68,12 @@ function callCollegeAPI (params, prevParams, res) {
     var paramsObj         = packageParams(params, prevParams),
         urlParams         = paramsObj.urlParams,
         finalParams       = paramsObj.finalParams,
-        fieldsReturned    = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private',
+        fieldsReturned    = '2015.aid.loan_principal,2015.aid.pell_grant_rate,2015.cost.avg_net_price.private,2015.cost.avg_net_price.public,2015.student.size,2015.admissions.sat_scores.average.overall,school.women_only,school.men_only,2015.admissions.admission_rate.overall,school.men_only,school.women_only,school.ownership,id,school.name,school.city,school.state,school.zip,school.school_url,school.price_calculator_url',
         incomeFieldString = determineIncome(finalParams.family_income)
 
         fieldsReturned += incomeFieldString
 
-    var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}_fields=${fieldsReturned}&api_key=${apiKey}`
+    var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlParams}school.operating__not=0&_fields=${fieldsReturned}&api_key=${apiKey}`
 
 
     console.log('Final url: ' + pathES6)
@@ -87,7 +87,7 @@ function callCollegeAPI (params, prevParams, res) {
             return
         }
         //search was successful
-        res.end(JSON.stringify({schools: result.data.results, finalParams: finalParams}))
+        res.end(JSON.stringify({metadata: result.data.metadata, schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
         var randNum = Math.floor(Math.random() * noResultsPhrases.length),
