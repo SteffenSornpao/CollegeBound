@@ -3,6 +3,8 @@
 var Sequelize = require("sequelize");
 // Requiring our college model
 var db = require("../models");
+var axios = require('axios');
+
 const Op = Sequelize.Op;
 
 // Routes
@@ -35,13 +37,33 @@ module.exports = function (app) {
     console.log("In Get route");
     db.college.findAll({
       limit: 10,
+      attributes: ["schoolid"],
       where: {
         searchCount: { [Op.gt]: 2 }
       },
       order: [['searchCount', 'DESC']]
     })
       .then(function (dbcollege) {
-        res.json(dbcollege);
+        
+        var urlIDs = ''
+        var fieldsReturned = 'id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private'
+        var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
+
+        dbcollege.forEach((school, ind) => {
+          urlIDs += school.schoolid 
+          if(ind < 9){
+            urlIDs += ','
+          }else{
+            urlIDs += '&'
+          }
+        })
+
+        var pathES6 = `https://api.data.gov/ed/collegescorecard/v1/schools.json?id=${urlIDs}_fields=${fieldsReturned}&api_key=${apiKey}`
+
+        axios.get(pathES6).then(result => {
+
+          res.end(JSON.stringify({schools: result.data.results}))
+        })
       });
   });
 

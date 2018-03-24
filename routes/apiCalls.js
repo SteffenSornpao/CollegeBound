@@ -5,10 +5,10 @@ var apiKey = 'zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8'
 
 //Helper functions
 var State          = require('./helperFuncs').state,
-    City           = require("./helperfuncs").city,
-    RegionId       = require("./helperfuncs").regionId,
-    WomenOnly      = require("./helperfuncs").womenOnly,
-    MenOnly      = require("./helperfuncs").menOnly,
+    City           = require('./helperFuncs').city,
+    RegionId       = require('./helperFuncs').regionId,
+    WomenOnly      = require('./helperFuncs').womenOnly,
+    MenOnly      = require('./helperFuncs').menOnly,
     determineMajor = require('./helperFuncs').determineMajor,
     determineSchoolSize = require('./helperFuncs').determineSchoolSize,
     determineIncome = require('./helperFuncs').determineIncome
@@ -108,9 +108,10 @@ function packageParams (params, prevParams) {
     //might need to change the refernces on params later...
     var SAT_score = finalParams.SAT_score ? `2015.admissions.sat_scores.average.overall__range=${Number(finalParams.SAT_score) - 400}..${Number(finalParams.SAT_score) + 150}&` : ''
     
-    //search for range of ACT scores (+3, -5)
-    var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : ''
+    //search for range of ACT scores (+3, -6)
+    var ACT_score = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 6}..${Number(finalParams.ACT_score) + 3}&` : ''
     
+    var degree_type = finalParams.degree_type ? `school.degrees_awarded.highest=${finalParams.degree_type}&` : ''
     
     var school_size = determineSchoolSize(finalParams.school_size, finalParams.school_size1)
 
@@ -122,7 +123,7 @@ function packageParams (params, prevParams) {
         womenOnly = WomenOnly(finalParams.womenOnly),
         menOnly = MenOnly(finalParams.menOnly)
 
-    var urlParams =  ACT_score + SAT_score + school_size + major + state + city + regionId + womenOnly + menOnly
+    var urlParams =  ACT_score + SAT_score + degree_type + school_size + major + state + city + regionId + womenOnly + menOnly
 
     console.log('Url: ' + urlParams)
   return {
