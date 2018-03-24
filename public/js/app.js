@@ -83,7 +83,7 @@ function submitQuery(){
           }
       }
       $("#results").html(" ")
-
+      $("#total").text()
       if(school){
         for (i=0;i<school.length;i++){
           $("#results").append(
@@ -92,13 +92,18 @@ function submitQuery(){
               "<div class='result-info'>"+school[i]['id']+"</div>"+
             "</div>"
           )
-          $("#results").animate({opacity: "1", top: "120px"}, 600)
         }
       }else{
         //DISPLAYING THE ERROR MESSAGE CAN GO HERE
         console.log(info)
       }
+      $(".result").animate({opacity: "1"}, 600)
       $("#results").animate({top: "120px"}, 600)
+  })
+  
+  $.post("/metadata", function(data){
+    var info = JSON.parse(data)
+    console.log(info)
   })
 }
 
