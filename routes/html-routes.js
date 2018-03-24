@@ -17,7 +17,6 @@ module.exports = function (app){
     app.post('/results', function(req, res){
         var query = req.body.query
         var prevParams = req.body.prevParams
-        console.log(prevParams)
         getInfo(query, prevParams, res)
     })
 
