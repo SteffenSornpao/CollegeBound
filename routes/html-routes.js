@@ -32,8 +32,4 @@ module.exports = function (app){
 
     })
 
-    //page doesn't exist
-    app.get('*', function(req, res){
-
-    })
 }
