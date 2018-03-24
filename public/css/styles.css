@@ -24,8 +24,8 @@ body {
   position: absolute;
   background-color: #143;
   color: #fff;
-  /* display: none; */
-  display: flex;
+  display: none;
+  /* display: flex; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -226,5 +226,17 @@ body {
   width: 100px;
   bottom: -50px;
   left: 0;
-
+}
+#most-popular {
+  position: absolute;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  color: #fff;
+  height: 50px;
+  width: 100px;
+  bottom: 0;
+  right: 0;
 }

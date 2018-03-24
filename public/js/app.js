@@ -177,6 +177,7 @@ function submitQuery(){
                   pv = finalParams[key]
                   break
               }
+              pv = pv.toUpperCase()
 // *** Param HTML ***
               $("#params").append(
                 "<div class='param' value='"+key+"'>"+pv+"</div>"
@@ -280,7 +281,9 @@ function submitQuery(){
           $("#total").html(`Total: ${total}`)
           $("#total").animate({right: "-32px"})
   // *** Pagination update on Dom ***
-          $("#next").animate({opacity: "1"})
+          if (currentPage != totalPages){
+            $("#next").animate({opacity: "1"})
+          }
           $("#current-page").html(currentPage+1)
           $("#total-pages").html(totalPages)
           $("#page-number").animate({bottom: "0"})
