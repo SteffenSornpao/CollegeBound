@@ -179,7 +179,7 @@ function submitQuery(){
               }
 // *** Param HTML ***
               $("#params").append(
-                "<div class='param'>"+pv.toUpperCase()+"</div>"
+                "<div class='param' value='"+key+"'>"+pv.toUpperCase()+"</div>"
               )
               $("#params").animate({left:"-=120px"}, 600)
 
@@ -398,6 +398,16 @@ $('#speak').on('click', function(e) {
   recognition.start();
 });
 
+// *** Click param ***
+$("#params").on("mousedown", ".param", function(){
+  $(this).css("background-color", "red")
+})
+$("#params").on("click", ".param", function(){
+  $(this).animate({opacity: "0"})
+  $("#params").animate({left: "+=120px"})
+  sessionStorage.removeItem($(this).attr("value"))
+  submitQuery()
+})
 
 // *** Click result ***
 $("#results").on("click", ".result", ".open", function(){
