@@ -24,8 +24,8 @@ body {
   position: absolute;
   background-color: #143;
   color: #fff;
-  display: none;
-  /* display: flex; */
+  /* display: none; */
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
