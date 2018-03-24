@@ -55,7 +55,11 @@ recognition.onerror = function(event) {
   }
 
 
-var paramS = []
+var paramS = [],
+    urlparams,
+    totalPages,
+    currentPage = 0;
+
 function submitQuery(){
   var query = $('input').val().trim(),
       previousParams = {
@@ -79,10 +83,10 @@ function submitQuery(){
       var info        = JSON.parse(data),
           finalParams = info.finalParams,
           school      = info.schools;
+          urlparams   = info.urlParams;
       if (info.metadata !== undefined){
-        var total = info.metadata.total,
-            currentPage  = info.metadata.page,
-            totalPages = Math.ceil(total/20);
+        total = info.metadata.total;
+        totalPages  = Math.ceil(total/20);
       }
       // store all params in session storage
       for (key in finalParams){
@@ -246,7 +250,7 @@ function submitQuery(){
           }
 // *** Result HTML ***
           $("#results").append(
-            `<div id='${school[i].id}' class='result'>
+            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
               <div class='result-title'>
                 ${school[i]['school.name']}
               </div>
@@ -269,24 +273,27 @@ function submitQuery(){
           )
           $("#results").animate({opacity: "1", top: "120px"}, 600)
         }
-        upsertDB(school)
+        $(".result").animate({opacity: "1"}, 600)
+        $("#results").animate({top: "120px"}, 600)
+        if (total !== undefined){
+  // *** Total update on Dom ***
+          $("#total").html(`Total: ${total}`)
+          $("#total").animate({right: "-32px"})
+  // *** Pagination update on Dom ***
+          $("#next").animate({opacity: "1"})
+          $("#current-page").html(currentPage+1)
+          $("#total-pages").html(totalPages)
+          $("#page-number").animate({bottom: "0"})
+        } else {
+  // *** No search results error ***
+          $("#err").animate({opacity: "1"}, 600)
+          setTimeout(()=>{
+            $("#err").animate({opacity: "0"}, 600)
+          }, 3000)
+        }
       }else{
         //DISPLAYING THE ERROR MESSAGE CAN GO HERE
-        console.log(info)
-      }
-      $(".result").animate({opacity: "1"}, 600)
-      $("#results").animate({top: "120px"}, 600)
-      if (total !== undefined){
-// *** Total update on Dom ***
-        $("#total").html(`Total: ${total}`)
-        $("#total").animate({right: "-32px"})
-// *** Pagination update on Dom ***
-        $("#next").animate({opacity: "1"})
-        $("#current-page").html(currentPage)
-        $("#total-pages").html(totalPages)
-        $("#page-number").animate({bottom: "0"})
-      } else {
-// *** No search results error ***
+        reset()
         $("#err").animate({opacity: "1"}, 600)
         setTimeout(()=>{
           $("#err").animate({opacity: "0"}, 600)
@@ -296,21 +303,19 @@ function submitQuery(){
 }
 
 //upsert schools into DB
-function upsertDB (schools) {
-  schools.forEach((school) => {
-    $.ajax('/api/colleges', {
-      method: 'PUT',
-      data: {
-        schoolid: school.id,
-        schoolname: school["school.name"]
-      },
-      success: function(data, status){
-        console.log('Upserted!')
-      },
-      error: function(something, string){
-        console.log('Fuck...')
-      }
-    })
+function upsertDB(id, name) {
+  $.ajax('/api/colleges', {
+    method: 'PUT',
+    data: {
+      schoolid: id,
+      schoolname: name
+    },
+    success: function(data, status){
+      console.log(data)
+    },
+    error: function(something, string){
+      console.log('Fuck...')
+    }
   })
 }
 
@@ -366,6 +371,10 @@ $("#reset").on("mouseleave", function(){
   $("#reset").animate({backgroundColor: "#000000"}, 500)
 })
 $("#reset").on("click", function(){
+  reset()
+})
+
+function reset(){
   sessionStorage.clear();
   paramS = []
   $("#results").fadeOut(500, function(){
@@ -376,7 +385,7 @@ $("#reset").on("click", function(){
   })
   $("#total").animate({right: "-63px"})
   $("#page-number").animate({bottom: "-50px"})
-})
+}
 
 // *** Speak button ***
 $("#speak").on("mouseenter", function(){
@@ -393,6 +402,10 @@ $('#speak').on('click', function(e) {
 // *** Click result ***
 $("#results").on("click", ".result", ".open", function(){
   resultClose()
+  var id = $(this).attr("value"),
+      name = $(this).attr("id")
+      console.log(id+" "+name)
+  upsertDB(id, name)
   $(this).delay(600).animate({marginLeft: "680px"}, function(){
     $(this).css("position", "fixed")
       .animate({top: "120px", bottom: "0"})
@@ -401,11 +414,6 @@ $("#results").on("click", ".result", ".open", function(){
       $(".result-info", this).fadeIn(300)
   })
 })
-
-// *** Click opened result ***
-// $("#results").on("click", ".open", function(){
-//   resultClose()
-// })
 
 function resultClose(){
   $(".result-title").animate({fontSize: "15px"})
@@ -417,6 +425,212 @@ function resultClose(){
   })
 }
 
+// *** Next page ***
 $("#next").on("click", function(){
-  submitQuery()
+  console.log(currentPage)
+  $("#results").animate({opacity: "0", top: "150px"}, 500, function(){
+    $("#results").html("")
+    currentPage++
+    console.log(currentPage)
+      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
+        var school = data.results
+        for (i=0;i<school.length;i++){
+          var own
+          switch (school[i]['school.ownership']){
+            case 1:
+              own = "Public School"
+              var cost = school[i]['2015.cost.avg_net_price.public']
+              break
+            case 2:
+              own = "Private Non-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            case 3:
+              own = "Private For-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            }
+          var menO
+          switch (school[i]['school.men_only']){
+            case 1:
+              menO = "Men Only<br>"
+              break
+            case 0:
+              menO = ""
+              break
+            }
+          var womenO
+          switch (school[i]['school.women_only']){
+            case 1:
+              womenO = "Women Only<br>"
+              break
+            case 0:
+              womenO = ""
+              break
+          }
+          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
+            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
+          } else {
+            var adm = "n/a"
+          }
+          if (school[i]['2015.aid.pell_grant_rate'] !== null){
+            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
+          } else {
+            var pell = "n/a"
+          }
+          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
+            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
+          } else {
+            var admSat = "n/a"
+          }
+          if (school[i]['2015.student.size'] !== null){
+            var size = school[i]['2015.student.size']
+          } else {
+            var size = "n/a"
+          }
+          if (school[i]['2015.aid.loan_principal'] !== null){
+            var debt = school[i]['2015.aid.loan_principal']
+          } else {
+            var debt = "n/a"
+          }
+// *** Result HTML ***
+          $("#results").append(
+            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
+              <div class='result-title'>
+                ${school[i]['school.name']}
+              </div>
+              <div class='result-info'>
+                <hr>
+                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
+                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
+                ${own}<br>
+                Average Cost: $${cost}<br>
+                ${menO}
+                ${womenO}
+                Admission Rate: ${adm}<br>
+                Avg SAT Score Admitted: ${admSat}<br>
+                Student Size: ${size}<br>
+                Percentage of Pell Grant Recipiants: ${pell}<br>
+                Median Debt for Graduates: ${debt}<br>
+              </div>
+            </div>`
+          )
+        }
+        console.log(currentPage+1 >= totalPages)
+        if (currentPage+1 >= totalPages) {
+          $("#prev").animate({opacity: "1"})
+          $("#next").animate({opacity: "0"})
+        } else {
+          $("#prev").animate({opacity: "1"})
+        }
+        console.log(currentPage)
+        $(".result").css("opacity", "1")
+        $("#results").animate({opacity: "1", top: "120px"}, 600)
+        $("#current-page").html(currentPage+1)
+      })
+  })
+})
+
+// *** Prev page ***
+$("#prev").on("click", function(){
+  $("#results").animate({opacity: "0", top: "150px"}, 500, function(){
+    $("#results").html("")
+    currentPage--
+    // if (page*20-total <= 0) {
+      $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=id,school.name,2015.admissions.act_scores.midpoint.cumulative,2015.student.size,2013.earnings.10_yrs_after_entry.median,2015.admissions.admission_rate.overall,school.school_url,school.price_calculator_url,2015.cost.avg_net_price.public,2015.cost.avg_net_price.private&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
+        var school = data.results
+        for (i=0;i<school.length;i++){
+          var own
+          switch (school[i]['school.ownership']){
+            case 1:
+              own = "Public School"
+              var cost = school[i]['2015.cost.avg_net_price.public']
+              break
+            case 2:
+              own = "Private Non-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            case 3:
+              own = "Private For-Profit School"
+              var cost = school[i]['2015.cost.avg_net_price.private']
+              break
+            }
+          var menO
+          switch (school[i]['school.men_only']){
+            case 1:
+              menO = "Men Only<br>"
+              break
+            case 0:
+              menO = ""
+              break
+            }
+          var womenO
+          switch (school[i]['school.women_only']){
+            case 1:
+              womenO = "Women Only<br>"
+              break
+            case 0:
+              womenO = ""
+              break
+          }
+          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
+            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
+          } else {
+            var adm = "n/a"
+          }
+          if (school[i]['2015.aid.pell_grant_rate'] !== null){
+            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
+          } else {
+            var pell = "n/a"
+          }
+          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
+            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
+          } else {
+            var admSat = "n/a"
+          }
+          if (school[i]['2015.student.size'] !== null){
+            var size = school[i]['2015.student.size']
+          } else {
+            var size = "n/a"
+          }
+          if (school[i]['2015.aid.loan_principal'] !== null){
+            var debt = school[i]['2015.aid.loan_principal']
+          } else {
+            var debt = "n/a"
+          }
+// *** Result HTML ***
+          $("#results").append(
+            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
+              <div class='result-title'>
+                ${school[i]['school.name']}
+              </div>
+              <div class='result-info'>
+                <hr>
+                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
+                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
+                ${own}<br>
+                Average Cost: $${cost}<br>
+                ${menO}
+                ${womenO}
+                Admission Rate: ${adm}<br>
+                Avg SAT Score Admitted: ${admSat}<br>
+                Student Size: ${size}<br>
+                Percentage of Pell Grant Recipiants: ${pell}<br>
+                Median Debt for Graduates: ${debt}<br>
+              </div>
+            </div>`
+          )
+        }
+        if (currentPage == 0) {
+          $("#prev").animate({opacity: "0"})
+          $("#next").animate({opacity: "1"})
+        }
+        $(".result").css("opacity", "1")
+        $("#results").animate({opacity: "1", top: "120px"}, 600)
+        $("#current-page").html(currentPage+1)
+      })
+    // }
+  })
 })

@@ -87,7 +87,7 @@ function callCollegeAPI (params, prevParams, res) {
             return
         }
         //search was successful
-        res.end(JSON.stringify({metadata: result.data.metadata, schools: result.data.results, finalParams: finalParams}))
+        res.end(JSON.stringify({urlParams: urlParams, metadata: result.data.metadata, schools: result.data.results, finalParams: finalParams}))
     }).catch(err => {
         console.log('---SOMETHING WENT WRONG------')
         var randNum = Math.floor(Math.random() * noResultsPhrases.length),
