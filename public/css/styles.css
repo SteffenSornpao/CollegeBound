@@ -24,7 +24,7 @@ body {
   position: absolute;
   background-color: #143;
   color: #fff;
-  /*display: none;*/
+  /* display: none; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -239,4 +239,5 @@ body {
   width: 100px;
   bottom: 0;
   right: 0;
+  z-index: 2;
 }
