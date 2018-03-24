@@ -65,7 +65,8 @@ function submitQuery(){
       womenOnly:     sessionStorage.getItem('womenOnly'),
       menOnly:       sessionStorage.getItem('menOnly'),
       family_income: sessionStorage.getItem('school_cost'),
-      major:         sessionStorage.getItem('major')
+      major:         sessionStorage.getItem('major'),
+      degree_type:   sessionStorage.getItem('degree_type')
   }
 
   previousParams = JSON.stringify(previousParams)

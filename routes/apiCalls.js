@@ -102,8 +102,9 @@ function packageParams (params, prevParams) {
   var finalParams = reconcileParams(params, prevParams)
   //might need to change the refernces on params later...
   var SAT_score = finalParams.SAT_score ? `2015.admissions.sat_scores.average.overall__range=${Number(finalParams.SAT_score) - 400}..${Number(finalParams.SAT_score) + 150}&` : '',
-  //search for range of ACT scores (+3, -5)
-      ACT_score   = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 5}..${Number(finalParams.ACT_score) + 3}&` : '',
+  //search for range of ACT scores (+3, -6)
+      ACT_score   = finalParams.ACT_score ? `2015.admissions.act_scores.midpoint.cumulative__range=${Number(finalParams.ACT_score) - 6}..${Number(finalParams.ACT_score) + 3}&` : '',
+      degree_type = finalParams.degree_type ? `school.degrees_awarded.highest=${finalParams.degree_type}&` : ''
       school_size = determineSchoolSize(finalParams.school_size, finalParams.school_size1),
       major       = determineMajor(finalParams.major),
       state       = State(finalParams.state),
@@ -112,7 +113,7 @@ function packageParams (params, prevParams) {
       womenOnly   = WomenOnly(finalParams.womenOnly),
       menOnly     = MenOnly(finalParams.menOnly)
 
-  var urlParams =  ACT_score + SAT_score + school_size + major + state + city + regionId + womenOnly + menOnly
+  var urlParams =  ACT_score + SAT_score + degree_type+ school_size + major + state + city + regionId + womenOnly + menOnly
   console.log('Url: ' + urlParams)
   return {
     urlParams: urlParams,
