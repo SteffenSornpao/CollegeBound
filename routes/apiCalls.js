@@ -4,10 +4,10 @@ var axios  = require('axios'),
 
 //Helper functions
 var State               = require('./helperFuncs').state,
-    City                = require("./helperfuncs").city,
-    RegionId            = require("./helperfuncs").regionId,
-    WomenOnly           = require("./helperfuncs").womenOnly,
-    MenOnly             = require("./helperfuncs").menOnly,
+    City                = require("./helperFuncs").city,
+    RegionId            = require("./helperFuncs").regionId,
+    WomenOnly           = require("./helperFuncs").womenOnly,
+    MenOnly             = require("./helperFuncs").menOnly,
     determineMajor      = require('./helperFuncs').determineMajor,
     determineSchoolSize = require('./helperFuncs').determineSchoolSize,
     determineIncome     = require('./helperFuncs').determineIncome
