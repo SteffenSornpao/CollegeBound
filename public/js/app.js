@@ -269,7 +269,7 @@ function submitQuery(){
               </div>
               <div class='result-info'>
                 <hr>
-                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
                 Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
                 Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
                 ${own}<br>
@@ -527,7 +527,7 @@ $("#next").on("click", function(){
               </div>
               <div class='result-info'>
                 <hr>
-                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
                 Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
                 Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
                 ${own}<br>
@@ -633,7 +633,7 @@ $("#prev").on("click", function(){
               </div>
               <div class='result-info'>
                 <hr>
-                URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
                 Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
                 Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
                 ${own}<br>
@@ -736,7 +736,7 @@ $("#most-popular").on("click", function(event){
            </div>
            <div class='result-info'>
              <hr>
-             URL: <a href="${school[i]['school.school_url']}">${school[i]['school.school_url']}</a><br>
+             URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
              Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
              Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
              ${own}<br>
