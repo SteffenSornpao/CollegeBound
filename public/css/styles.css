@@ -31,7 +31,7 @@ body {
   align-items: center;
   height: 100%;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 #start-info {
   display: flex;
@@ -40,6 +40,12 @@ body {
   font-size: 25px;
   text-align: center;
   align-items: center;
+}
+#a {
+  witdh: 100px;
+  height: 50px;
+  border-radius: 20px;
+  font-size: 20px;
 }
 #err-container {
   display: flex;
