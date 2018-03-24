@@ -41,6 +41,12 @@ body {
   text-align: center;
   align-items: center;
 }
+#a {
+  height: 50px;
+  width: 100px;
+  border-radius: 10px;
+  font-size: 20px;
+}
 #err-container {
   display: flex;
   justify-content: center;
