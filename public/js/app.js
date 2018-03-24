@@ -56,6 +56,7 @@ recognition.onerror = function(event) {
 
 
 var paramS = [],
+    paramSkey = [],
     urlparams,
     totalPages,
     currentPage = 0;
@@ -99,7 +100,13 @@ function submitQuery(){
           if (finalParams[key] !== ""){
             if (paramS.includes(finalParams[key])){
             } else {
+              console.log(paramS)
+              console.log(paramSkey)
+              if (paramSkey.includes(key)){
+                $(`#${key}`).animate({opacity: "0"})
+              }
               paramS.push(finalParams[key])
+              paramSkey.push(key)
               var pv
               switch (key){
                 case "ACT_score":
@@ -131,7 +138,6 @@ function submitQuery(){
                   pv = "WOMEN"
                   break
                 case "school_size":
-                console.log(finalParams[key])
                   if (!isNaN(finalParams[key])){
                     if (finalParams[key]>=100000){
                       pv = "100K+ PPL"
@@ -186,7 +192,7 @@ function submitQuery(){
               pv = pv.toUpperCase()
 // *** Param HTML ***
               $("#params").append(
-                "<div class='param' value='"+key+"'>"+pv+"</div>"
+                "<div id='"+key+"' class='param' value='"+key+"'>"+pv+"</div>"
               )
               $("#params").animate({left:"-=120px"}, 600)
 
