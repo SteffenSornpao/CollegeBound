@@ -131,14 +131,19 @@ function submitQuery(){
                   pv = "WOMEN"
                   break
                 case "school_size":
+                console.log(finalParams[key])
                   if (!isNaN(finalParams[key])){
                     if (finalParams[key]>=100000){
                       pv = "100K+ PPL"
-                    } else {
+                      break
+                    }else {
                       pv = finalParams[key]+" PPL"
+                      break
                     }
+                  } else {
+                    pv = finalParams[key]
+                    break
                   }
-                  break
                 case "regionId":
                   switch (finalParams[key]){
                     case "0":
@@ -177,6 +182,7 @@ function submitQuery(){
                   pv = finalParams[key]
                   break
               }
+              console.log(pv)
               pv = pv.toUpperCase()
 // *** Param HTML ***
               $("#params").append(
