@@ -7,6 +7,7 @@ try {
     var recognition = new SpeechRecognition();
   }
 catch(e) {
+  alert('Nope!')
   console.error(e);
   $('.no-browser-support').show();
   $('.app').hide();
@@ -200,120 +201,7 @@ function submitQuery(){
           }
       }
 // *** Schools append to DOM ***
-      $("#results").html(" ")
-      if(school){
-        for (i=0;i<school.length;i++){
-          var own
-          switch (school[i]['school.ownership']){
-            case 1:
-              own = "Public School"
-              var cost = school[i]['2015.cost.avg_net_price.public']
-              break
-            case 2:
-              own = "Private Non-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            case 3:
-              own = "Private For-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            }
-          var menO
-          switch (school[i]['school.men_only']){
-            case 1:
-              menO = "Men Only<br>"
-              break
-            case 0:
-              menO = ""
-              break
-            }
-          var womenO
-          switch (school[i]['school.women_only']){
-            case 1:
-              womenO = "Women Only<br>"
-              break
-            case 0:
-              womenO = ""
-              break
-          }
-          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
-            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
-          } else {
-            var adm = "n/a"
-          }
-          if (school[i]['2015.aid.pell_grant_rate'] !== null){
-            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
-          } else {
-            var pell = "n/a"
-          }
-          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
-            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
-          } else {
-            var admSat = "n/a"
-          }
-          if (school[i]['2015.student.size'] !== null){
-            var size = school[i]['2015.student.size']
-          } else {
-            var size = "n/a"
-          }
-          if (school[i]['2015.aid.loan_principal'] !== null){
-            var debt = school[i]['2015.aid.loan_principal']
-          } else {
-            var debt = "n/a"
-          }
-// *** Result HTML ***
-          $("#results").append(
-            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
-              <div class='result-title'>
-                ${school[i]['school.name']}
-              </div>
-              <div class='result-info'>
-                <hr>
-                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
-                Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
-                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
-                ${own}<br>
-                Average Cost: $${cost}<br>
-                ${menO}
-                ${womenO}
-                Admission Rate: ${adm}<br>
-                Avg SAT Score Admitted: ${admSat}<br>
-                Student Size: ${size}<br>
-                Percentage of Pell Grant Recipiants: ${pell}<br>
-                Median Debt for Graduates: ${debt}<br>
-              </div>
-            </div>`
-          )
-          $("#results").animate({opacity: "1", top: "120px"}, 600)
-        }
-        $(".result").animate({opacity: "1"}, 600)
-        $("#results").animate({top: "120px"}, 600)
-        if (total !== undefined){
-  // *** Total update on Dom ***
-          $("#total").html(`Total: ${total}`)
-          $("#total").animate({right: "-32px"})
-  // *** Pagination update on Dom ***
-          if (currentPage != totalPages){
-            $("#next").animate({opacity: "1"})
-          }
-          $("#current-page").html(currentPage+1)
-          $("#total-pages").html(totalPages)
-          $("#page-number").animate({bottom: "0"})
-        } else {
-  // *** No search results error ***
-          $("#err").animate({opacity: "1"}, 600)
-          setTimeout(()=>{
-            $("#err").animate({opacity: "0"}, 600)
-          }, 3000)
-        }
-      }else{
-        //DISPLAYING THE ERROR MESSAGE CAN GO HERE
-        reset()
-        $("#err").animate({opacity: "1"}, 600)
-        setTimeout(()=>{
-          $("#err").animate({opacity: "0"}, 600)
-        }, 3000)
-      }
+      updateDOM(school)
   })
 }
 
@@ -460,100 +348,8 @@ $("#next").on("click", function(){
       $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=2015.aid.loan_principal,2015.aid.pell_grant_rate,2015.cost.avg_net_price.private,2015.cost.avg_net_price.public,2015.student.size,2015.admissions.sat_scores.average.overall,school.women_only,school.men_only,2015.admissions.admission_rate.overall,school.men_only,school.women_only,school.ownership,id,school.name,school.city,school.state,school.zip,school.school_url,school.price_calculator_url&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
         var school = data.results
         console.log(data)
-        for (i=0;i<school.length;i++){
-          var own
-          switch (school[i]['school.ownership']){
-            case 1:
-              own = "Public School"
-              var cost = school[i]['2015.cost.avg_net_price.public']
-              break
-            case 2:
-              own = "Private Non-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            case 3:
-              own = "Private For-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            }
-          var menO
-          switch (school[i]['school.men_only']){
-            case 1:
-              menO = "Men Only<br>"
-              break
-            case 0:
-              menO = ""
-              break
-            }
-          var womenO
-          switch (school[i]['school.women_only']){
-            case 1:
-              womenO = "Women Only<br>"
-              break
-            case 0:
-              womenO = ""
-              break
-          }
-          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
-            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
-          } else {
-            var adm = "n/a"
-          }
-          if (school[i]['2015.aid.pell_grant_rate'] !== null){
-            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
-          } else {
-            var pell = "n/a"
-          }
-          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
-            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
-          } else {
-            var admSat = "n/a"
-          }
-          if (school[i]['2015.student.size'] !== null){
-            var size = school[i]['2015.student.size']
-          } else {
-            var size = "n/a"
-          }
-          if (school[i]['2015.aid.loan_principal'] !== null){
-            var debt = school[i]['2015.aid.loan_principal']
-          } else {
-            var debt = "n/a"
-          }
-// *** Result HTML ***
-          $("#results").append(
-            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
-              <div class='result-title'>
-                ${school[i]['school.name']}
-              </div>
-              <div class='result-info'>
-                <hr>
-                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
-                Price Calculator: <a href="https://${school[i]['school.price_calculator_url']}" target="_blank">${school[i]['school.price_calculator_url']}</a><br>
-                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
-                ${own}<br>
-                Average Cost: $${cost}<br>
-                ${menO}
-                ${womenO}
-                Admission Rate: ${adm}<br>
-                Avg SAT Score Admitted: ${admSat}<br>
-                Student Size: ${size}<br>
-                Percentage of Pell Grant Recipiants: ${pell}<br>
-                Median Debt for Graduates: ${debt}<br>
-              </div>
-            </div>`
-          )
-        }
-        console.log(currentPage+1 >= totalPages)
-        if (currentPage+1 >= totalPages) {
-          $("#prev").animate({opacity: "1"})
-          $("#next").animate({opacity: "0"})
-        } else {
-          $("#prev").animate({opacity: "1"})
-        }
-        console.log(currentPage)
-        $(".result").css("opacity", "1")
-        $("#results").animate({opacity: "1", top: "120px"}, 600)
-        $("#current-page").html(currentPage+1)
+        
+        updateDOM(school)
       })
   })
 })
@@ -566,96 +362,8 @@ $("#prev").on("click", function(){
     // if (page*20-total <= 0) {
       $.get(`https://api.data.gov/ed/collegescorecard/v1/schools.json?${urlparams}_page=${currentPage}&school.operating__not=0&_fields=2015.aid.loan_principal,2015.aid.pell_grant_rate,2015.cost.avg_net_price.private,2015.cost.avg_net_price.public,2015.student.size,2015.admissions.sat_scores.average.overall,school.women_only,school.men_only,2015.admissions.admission_rate.overall,school.men_only,school.women_only,school.ownership,id,school.name,school.city,school.state,school.zip,school.school_url,school.price_calculator_url&api_key=zZciBMZkRuMWxEaFwOxiHQAltnZnufev2B97VRn8`, function(data){
         var school = data.results
-        for (i=0;i<school.length;i++){
-          var own
-          switch (school[i]['school.ownership']){
-            case 1:
-              own = "Public School"
-              var cost = school[i]['2015.cost.avg_net_price.public']
-              break
-            case 2:
-              own = "Private Non-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            case 3:
-              own = "Private For-Profit School"
-              var cost = school[i]['2015.cost.avg_net_price.private']
-              break
-            }
-          var menO
-          switch (school[i]['school.men_only']){
-            case 1:
-              menO = "Men Only<br>"
-              break
-            case 0:
-              menO = ""
-              break
-            }
-          var womenO
-          switch (school[i]['school.women_only']){
-            case 1:
-              womenO = "Women Only<br>"
-              break
-            case 0:
-              womenO = ""
-              break
-          }
-          if (school[i]['2015.admissions.admission_rate.overall'] !== null){
-            var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
-          } else {
-            var adm = "n/a"
-          }
-          if (school[i]['2015.aid.pell_grant_rate'] !== null){
-            var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
-          } else {
-            var pell = "n/a"
-          }
-          if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
-            var admSat = school[i]['2015.admissions.sat_scores.average.overall']
-          } else {
-            var admSat = "n/a"
-          }
-          if (school[i]['2015.student.size'] !== null){
-            var size = school[i]['2015.student.size']
-          } else {
-            var size = "n/a"
-          }
-          if (school[i]['2015.aid.loan_principal'] !== null){
-            var debt = school[i]['2015.aid.loan_principal']
-          } else {
-            var debt = "n/a"
-          }
-// *** Result HTML ***
-          $("#results").append(
-            `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
-              <div class='result-title'>
-                ${school[i]['school.name']}
-              </div>
-              <div class='result-info'>
-                <hr>
-                URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
-                Price Calculator: <a href="https://${school[i]['school.price_calculator_url']}" target="_blank">${school[i]['school.price_calculator_url']}</a><br>
-                Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
-                ${own}<br>
-                Average Cost: $${cost}<br>
-                ${menO}
-                ${womenO}
-                Admission Rate: ${adm}<br>
-                Avg SAT Score Admitted: ${admSat}<br>
-                Student Size: ${size}<br>
-                Percentage of Pell Grant Recipiants: ${pell}<br>
-                Median Debt for Graduates: ${debt}<br>
-              </div>
-            </div>`
-          )
-        }
-        if (currentPage == 0) {
-          $("#prev").animate({opacity: "0"})
-          $("#next").animate({opacity: "1"})
-        }
-        $(".result").css("opacity", "1")
-        $("#results").animate({opacity: "1", top: "120px"}, 600)
-        $("#current-page").html(currentPage+1)
+        
+        updateDOM(school)
       })
     // }
   })
@@ -669,91 +377,127 @@ $("#most-popular").on("click", function(event){
      console.log(JSON.parse(data))
      data = JSON.parse(data)
      school = data.schools
-     for (i=0;i<school.length;i++){
-       var own
-       switch (school[i]['school.ownership']){
-         case 1:
-           own = "Public School"
-           var cost = school[i]['2015.cost.avg_net_price.public']
-           break
-         case 2:
-           own = "Private Non-Profit School"
-           var cost = school[i]['2015.cost.avg_net_price.private']
-           break
-         case 3:
-           own = "Private For-Profit School"
-           var cost = school[i]['2015.cost.avg_net_price.private']
-           break
-         }
-       var menO
-       switch (school[i]['school.men_only']){
-         case 1:
-           menO = "Men Only<br>"
-           break
-         case 0:
-           menO = ""
-           break
-         }
-       var womenO
-       switch (school[i]['school.women_only']){
-         case 1:
-           womenO = "Women Only<br>"
-           break
-         case 0:
-           womenO = ""
-           break
-       }
-       if (school[i]['2015.admissions.admission_rate.overall'] !== null){
-         var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
-       } else {
-         var adm = "n/a"
-       }
-       if (school[i]['2015.aid.pell_grant_rate'] !== null){
-         var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
-       } else {
-         var pell = "n/a"
-       }
-       if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
-         var admSat = school[i]['2015.admissions.sat_scores.average.overall']
-       } else {
-         var admSat = "n/a"
-       }
-       if (school[i]['2015.student.size'] !== null){
-         var size = school[i]['2015.student.size']
-       } else {
-         var size = "n/a"
-       }
-       if (school[i]['2015.aid.loan_principal'] !== null){
-         var debt = school[i]['2015.aid.loan_principal']
-       } else {
-         var debt = "n/a"
-       }
-  // *** Result HTML ***
-       $("#results").append(
-         `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
-           <div class='result-title'>
-             ${school[i]['school.name']}
-           </div>
-           <div class='result-info'>
-             <hr>
-             URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
-             Price Calculator: <a href="https://${school[i]['school.price_calculator_url']}" target="_blank">${school[i]['school.price_calculator_url']}</a><br>
-             Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
-             ${own}<br>
-             Average Cost: $${cost}<br>
-             ${menO}
-             ${womenO}
-             Admission Rate: ${adm}<br>
-             Avg SAT Score Admitted: ${admSat}<br>
-             Student Size: ${size}<br>
-             Percentage of Pell Grant Recipiants: ${pell}<br>
-             Median Debt for Graduates: ${debt}<br>
-           </div>
-         </div>`
-       )
-     }
-     $(".result").animate({opacity: "1"})
-     $("#results").animate({opacity: "1", top: "120px"}, 600)
-     $("#current-page").html(currentPage+1)
+     updateDOM(school)
    })
 })
+
+function updateDOM (school){
+  $("#results").html(" ")
+        if(school){
+          for (i=0;i<school.length;i++){
+            var own
+            switch (school[i]['school.ownership']){
+              case 1:
+                own = "Public School"
+                var cost = school[i]['2015.cost.avg_net_price.public']
+                break
+              case 2:
+                own = "Private Non-Profit School"
+                var cost = school[i]['2015.cost.avg_net_price.private']
+                break
+              case 3:
+                own = "Private For-Profit School"
+                var cost = school[i]['2015.cost.avg_net_price.private']
+                break
+              }
+            var menO
+            switch (school[i]['school.men_only']){
+              case 1:
+                menO = "Men Only<br>"
+                break
+              case 0:
+                menO = ""
+                break
+              }
+            var womenO
+            switch (school[i]['school.women_only']){
+              case 1:
+                womenO = "Women Only<br>"
+                break
+              case 0:
+                womenO = ""
+                break
+            }
+            if (school[i]['2015.admissions.admission_rate.overall'] !== null){
+              var adm = (school[i]['2015.admissions.admission_rate.overall']*100).toString().substr(0,2)+"%"
+            } else {
+              var adm = "n/a"
+            }
+            if (school[i]['2015.aid.pell_grant_rate'] !== null){
+              var pell = (school[i]['2015.aid.pell_grant_rate']*100).toString().substr(0,2)+"%"
+            } else {
+              var pell = "n/a"
+            }
+            if (school[i]['2015.admissions.sat_scores.average.overall'] !== null){
+              var admSat = school[i]['2015.admissions.sat_scores.average.overall']
+            } else {
+              var admSat = "n/a"
+            }
+            if (school[i]['2015.student.size'] !== null){
+              var size = school[i]['2015.student.size']
+            } else {
+              var size = "n/a"
+            }
+            if (school[i]['2015.aid.loan_principal'] !== null){
+              var debt = school[i]['2015.aid.loan_principal']
+            } else {
+              var debt = "n/a"
+            }
+  // *** Result HTML ***
+            $("#results").append(
+              `<div id='${school[i]['school.name']}' class='result' value="${school[i].id}">
+                <div class='result-title'>
+                  ${school[i]['school.name']}
+                </div>
+                <div class='result-info'>
+                  <hr>
+                  URL: <a href="https://${school[i]['school.school_url']}" target="_blank">${school[i]['school.school_url']}</a><br>
+                  Price Calculator: <a href="${school[i]['school.price_calculator_url']}">${school[i]['school.price_calculator_url']}</a><br>
+                  Location: ${school[i]['school.city']}, ${school[i]['school.state']} ${school[i]['school.zip']}<br>
+                  ${own}<br>
+                  Average Cost: $${cost}<br>
+                  ${menO}
+                  ${womenO}
+                  Admission Rate: ${adm}<br>
+                  Avg SAT Score Admitted: ${admSat}<br>
+                  Student Size: ${size}<br>
+                  Percentage of Pell Grant Recipiants: ${pell}<br>
+                  Median Debt for Graduates: ${debt}<br>
+                </div>
+              </div>`
+            )
+            $("#results").animate({opacity: "1", top: "120px"}, 600)
+          }
+          $(".result").animate({opacity: "1"}, 600)
+          $("#results").animate({top: "120px"}, 600)
+          if (total !== undefined){
+    // *** Total update on Dom ***
+    $("#total").html(`Total: ${total}`)
+    $("#total").animate({right: "-32px"})
+      // *** Pagination update on Dom ***
+      if (currentPage+1 >= totalPages) {
+          $("#prev").animate({opacity: "1"})
+          $("#next").animate({opacity: "0"})
+      }else if (currentPage == 0) {
+          $("#prev").animate({opacity: "0"})
+          $("#next").animate({opacity: "1"})
+      }
+        $("#current-page").html(currentPage+1)
+        $("#total-pages").html(totalPages)
+        $("#page-number").animate({bottom: "0"})
+  }else{
+// *** No search results error ***
+        $("#err").animate({opacity: "1"}, 600)
+        setTimeout(()=>{
+          $("#err").animate({opacity: "0"}, 600)
+        }, 3000)
+      }
+    }else{
+      //DISPLAYING THE ERROR MESSAGE CAN GO HERE
+      reset()
+      $("#err").animate({opacity: "1"}, 600)
+      setTimeout(()=>{
+        $("#err").animate({opacity: "0"}, 600)
+      }, 3000)
+    }
+}
