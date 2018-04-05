@@ -191,10 +191,14 @@ body {
   border-radius: 10px;
   color: #ffffff;
   margin: 1%;
-  margin-left: 100px;
   padding: 1%;
   width: 400px;
   z-index: 1;
+  opacity: 1;
+  margin-left: 680px;
+  position: fixed;
+  top: 120px;
+  bottom: 0px;
 }
 #pagination {
   position: absolute;
