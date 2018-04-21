@@ -16,7 +16,8 @@ Search by voice or keystroke to receive your results.
 - Family income
 - School size
 
-**Demo**
+**Demo**  
+
 ![College bound demo](./readmeAssets/CB_demo.gif)
 
 https://college-bound.herokuapp.com/
